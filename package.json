@@ -19,6 +19,7 @@
     "check": "npm run contracts:test && npm run fmt:check && npm run typecheck && npm run lint && npm run format:check",
     "prebuild": "node scripts/ensure-clients.mjs",
     "build": "npm run build --workspace app",
+    "test:mesa": "node --test server/problems.test.mjs server/gemma.test.mjs server/match.test.mjs server/ledger.test.mjs server/reset.test.mjs",
     "tw:smoke": "node scripts/tw-smoke.mjs",
     "agents:sync": "node scripts/agents-sync.mjs",
     "agents:check": "node scripts/agents-sync.mjs --check",

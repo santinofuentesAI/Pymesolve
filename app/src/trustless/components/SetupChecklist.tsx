@@ -43,20 +43,20 @@ export const SetupChecklist = () => {
 		{
 			done: Boolean(address),
 			label: cavos
-				? "Sign in with email/Google (wallet created for you) or connect a Stellar wallet on Testnet"
-				: "Connect a Stellar wallet (Freighter works great) set to Testnet",
+				? "Entrá con correo o Google (te creamos la cuenta) o usá una wallet en Testnet"
+				: "Conectá una wallet de Stellar en Testnet (Freighter anda bien)",
 			action: !address && (
 				<>
-					{cavos && <button onClick={cavos.signIn}>Sign in</button>}
+					{cavos && <button onClick={cavos.signIn}>Entrar</button>}
 					<button onClick={() => void connectWallet()}>
-						{cavos ? "Use a wallet" : "Connect"}
+						{cavos ? "Usar una wallet" : "Conectar"}
 					</button>
 				</>
 			),
 		},
 		{
 			done: Boolean(xlm),
-			label: `Get test XLM to pay fees${xlm ? ` · ${xlm} XLM` : ""}`,
+			label: `Cargar XLM de prueba para las comisiones${xlm ? ` · ${xlm} XLM` : ""}`,
 			action: address && !xlm && isTestnet && (
 				<button
 					disabled={!!busy}
@@ -73,7 +73,7 @@ export const SetupChecklist = () => {
 		},
 		{
 			done: usdc !== undefined,
-			label: "Add a USDC trustline (lets your account hold USDC)",
+			label: "Agregar trustline de USDC (para poder retener USDC)",
 			action: address && xlm && usdc === undefined && (
 				<button
 					disabled={!!busy}
@@ -83,13 +83,13 @@ export const SetupChecklist = () => {
 						)
 					}
 				>
-					Add trustline
+					Agregar trustline
 				</button>
 			),
 		},
 		{
 			done: usdc !== undefined && Number(usdc.replace(/,/g, "")) > 0,
-			label: `Get test USDC${usdc !== undefined ? ` · ${usdc} USDC` : ""}`,
+			label: `Conseguir USDC de prueba${usdc !== undefined ? ` · ${usdc} USDC` : ""}`,
 			action: address && usdc !== undefined && isTestnet && (
 				<>
 					<button
@@ -103,7 +103,7 @@ export const SetupChecklist = () => {
 						Swap 100 XLM → USDC
 					</button>
 					<a href="https://faucet.circle.com" target="_blank" rel="noreferrer">
-						or Circle faucet
+						o faucet de Circle
 					</a>
 				</>
 			),
@@ -111,14 +111,14 @@ export const SetupChecklist = () => {
 		{
 			done: isTrustlessWorkConfigured,
 			label:
-				"Trustless Work API key in app/.env (PUBLIC_TRUSTLESS_WORK_API_KEY)",
+				"Clave de Trustless Work en app/.env (PUBLIC_TRUSTLESS_WORK_API_KEY)",
 			action: !isTrustlessWorkConfigured && (
 				<a
 					href="https://dapp.trustlesswork.com"
 					target="_blank"
 					rel="noreferrer"
 				>
-					Get a key
+					Pedir una clave
 				</a>
 			),
 		},
@@ -129,9 +129,9 @@ export const SetupChecklist = () => {
 	return (
 		<details className={`card ${styles.checklist}`} open={!allDone}>
 			<summary>
-				<strong>Setup</strong>{" "}
+				<strong>Preparar cuenta</strong>{" "}
 				{allDone
-					? "✅ ready to escrow"
+					? "lista para retener USDC"
 					: `(${steps.filter((s) => s.done).length}/${steps.length})`}
 			</summary>
 			<ol>
@@ -143,7 +143,7 @@ export const SetupChecklist = () => {
 					</li>
 				))}
 			</ol>
-			{busy && <p className={styles.muted}>{busy}… confirm in your wallet</p>}
+			{busy && <p className={styles.muted}>{busy}… confirmá en la wallet</p>}
 		</details>
 	)
 }

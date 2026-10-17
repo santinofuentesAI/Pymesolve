@@ -80,6 +80,22 @@ entre con su correo.
 | Contrato `reputation` | Contrato de ejemplo con reseñas on-chain ligadas a cada escrow: almacenamiento, permisos, errores, eventos y tests. |
 | Scripts | `setup:tools` (instala herramientas sin compilar), `doctor` (diagnóstico), `check` (tests, formato, tipos y lint), `tw:smoke` (prueba de escrows de punta a punta). |
 
+## What I built
+
+**PymeSolve** es el marketplace de problemas de un barrio (reto 03, Comunidad Tica). Tres sodas no pagan tres videos: juntan un solo encargo y un oficio cobra esa meta.
+
+Al abrir, sin conectar nada, se ve el caso: Soda El Casado, Pulpería Doña Lidi y Salón Nidia piden un video de 20 segundos. Meta: 30 USDC.
+
+El contrato `pools` guarda quién se unió, cuánto comprometió y el estado. No mueve USDC. El USDC espera en un retén de Trustless Work (plan y entrega) y se suelta cuando la mayoría dice que lo vio, o cuando la mesa lee el chat y desempata. Scaffold Stellar despliega el contrato y genera el cliente de TypeScript. Los nombres y el barrio no van a la red.
+
+Se entra con correo o Google (Cavos). La misma `useWallet()` firma el contrato y el retén. `npm start` levanta Scaffold, Vite y la mesa local. En Ajustes hay un solo botón de plata de prueba (cuenta, dólares, y recién ahí se deposita).
+
+Contrato `pools` en testnet: [`CDMSG23ZH5L7YKSGZ2EN4RGFI65OU4DGVOAKUDTXEGWSWPA2U23BH3RU`](https://stellar.expert/explorer/testnet/contract/CDMSG23ZH5L7YKSGZ2EN4RGFI65OU4DGVOAKUDTXEGWSWPA2U23BH3RU).
+
+Opcional: `ollama pull gemma4:e2b` para que un modelo local proponga gemelos y arme las tarjetas del modo Dopamina. Si no está, la app usa plantillas.
+
+Demo de cinco minutos: abrir Problemas → ver las tres y la meta de 30 → Entrar → Ajustes, cargar plata de prueba → un oficio toma el encargo → cada pyme deposita → el oficio deja la carta del lunes → otra pyme toca «Yo lo vi» y se suelta el USDC.
+
 No todas las aplicaciones necesitan los tres componentes. Una aplicación de votaciones, por ejemplo, es un contrato Soroban con inicio de sesión por correo y no usa escrows. El agente elige los componentes según la idea.
 
 Todo funciona en **testnet**, la red de pruebas de Stellar: los fondos no tienen valor real.
@@ -240,7 +256,7 @@ Ejecuta `npm run doctor` y consulta la [guía de problemas comunes](.agents/skil
 
 ## Versiones
 
-- `stellar-scaffold-cli` **0.0.27** con la configuración **v1** (`environments.toml`). El template oficial de Scaffold ya usa un formato nuevo (v2) que esta versión del CLI no soporta, por eso este repositorio se distribuye ya generado y no es necesario ejecutar `stellar scaffold init`.
+- `stellar-scaffold-cli` **0.0.28** con `scaffold.yml` versión 2. La red de trabajo es `testnet`. `environments.toml` queda como referencia del formato anterior.
 - `@trustless-work/escrow` **3.0.5** (API V1, estable).
 - `@cavos/kit` **0.2.5**.
 - `soroban-sdk` **26.1** y OpenZeppelin `stellar-*` **0.7.2**.

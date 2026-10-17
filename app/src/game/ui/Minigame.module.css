@@ -1,0 +1,111 @@
+.stage {
+	position: fixed;
+	inset: 0;
+	z-index: 40;
+	background: #10140f;
+	color: #f4efe4;
+	font-family: "Noto Sans", "Liberation Sans", sans-serif;
+}
+
+.stage[data-game="boxing"] {
+	background: #140e12;
+}
+
+.hud {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 16px 24px 20px;
+	pointer-events: none;
+	background: linear-gradient(transparent, rgba(8, 6, 10, 0.72));
+}
+
+.chips {
+	display: flex;
+	gap: 10px;
+}
+
+.chip {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	min-width: 140px;
+	padding: 8px 12px;
+	border: 2px solid #f4efe4;
+	background: rgba(18, 16, 26, 0.88);
+	font-size: 16px;
+}
+
+.intro {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 12px;
+	box-sizing: border-box;
+	padding: 48px 56px;
+	background: #12101a;
+}
+
+.kicker {
+	margin: 0;
+	font-size: 14px;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: #ffd24d;
+}
+
+.title {
+	margin: 0;
+	font-size: clamp(42px, 7vw, 72px);
+	line-height: 0.95;
+	font-weight: 800;
+}
+
+.place {
+	margin: 0;
+	font-size: 18px;
+	color: #b7b1c4;
+}
+
+.card {
+	max-width: 720px;
+	margin-top: 12px;
+	padding: 18px 20px;
+	border: 3px solid #f4efe4;
+	background: #1a1814;
+}
+
+.rules {
+	margin: 0 0 8px;
+	font-size: 20px;
+	line-height: 1.35;
+}
+
+.keys {
+	margin: 0;
+	color: #b7b1c4;
+}
+
+.prompt {
+	margin-top: 18px;
+	font-size: 18px;
+}
+
+.winners {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 8px;
+}
+
+.winner {
+	margin: 0;
+	font-size: 28px;
+	font-weight: 800;
+}

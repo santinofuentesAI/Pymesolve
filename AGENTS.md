@@ -58,8 +58,7 @@ verified, version-specific facts that differ from your training data.
    design), so you may read and edit it, but never commit it.
 5. Don't edit generated code: `app-lib/clients/*` (Scaffold regenerates it) and
    `.agents/skills/trustless-work/references/official/` (vendored).
-6. Scaffold config is **v1** (`environments.toml`). Don't migrate to
-   `scaffold.yml` v2.
+6. Scaffold config is **v2** (`scaffold.yml`, CLI **0.0.28**). The working network is `testnet` (`STELLAR_NETWORK`). `environments.toml` is the old v1 file and is not what `build` reads.
 7. Trustless Work is **API V1** with `@trustless-work/escrow@3.0.5`. Don't
    upgrade to the 5.x beta or mix V2 payloads.
 8. Reuse what exists before writing new code: `contracts/reputation` (contract
@@ -140,3 +139,26 @@ docs/AGENT-SETUP.md       per-agent setup and optional MCP servers
   Stellar docs, ecosystem data and playbooks; already configured, needs a
   one-time browser sign-in. Other optional MCP servers (Trustless Work docs,
   OpenZeppelin contract wizard): see `docs/AGENT-SETUP.md`.
+
+## Learned User Preferences
+
+- Write product UI in Spanish; the user works in Spanish.
+- Do 3D characters and visual scene work with Grok or Composer, not Claude.
+- Menus and screens need a hard, own identity: DeFiesta is a full-window party-game title; PymeSolve is a 440px phone column. Solid colors, hard borders, strong contrast. Avoid a generic AI look: glow cards, gradient titles, shimmer, glass, and emoji button lists. Animate only on interaction.
+- DeFiesta minigames are 3D (a race to the finish and a four-player boxing match), with a tutorial and a scene change before play.
+- A round is all four players having rolled and moved. After that, everyone plays the minigame.
+- Free play with fake coins is the playable path first. Real stakes are USDC only (a shared fixed buy-in or a custom amount); XLM is only for network fees. Public and private matches come later.
+- Play is local hotseat on one device (keyboard or gamepad), two to four players, with CPU filling empty seats.
+- PymeSolve has to read like a real phone app on first open: one thing on screen, a single next step, and bottom tabs that follow the role (pyme: Problemas, Encargos, Publicar, Libro, Ajustes; oficio: Ofertas, Encargos, Chats, Libro, Ajustes; mesa: Mesa, Altas, Chats, Libro, Ajustes). Dopamina is a Tinder-style swipe deck, optional on home from Ajustes, not a tab. Search is one phrase and one result, not a grid. Product screens say retén, oficio, carta, and el lunes; technical words (testnet, contrato, Cavos, trustline, firmar, escrow) stay in Ajustes. Copy leads with “la pyme paga una vez” and “quién te lo hace” for starting businesses that need who does the work, not barrio-as-tagline. Gemma is local and never signs or moves money. Ajustes holds three solid themes (papel, campo, noche) and a short note on how the app was built.
+- Ajustes role switch (Pyme / Usuario / Mesa) must change the whole app, not just labels. Oficio profiles include a portfolio of work links; the mesa does not publish, take encargos, or need a portfolio.
+- EnComún (still in the repo) uses one category on screen, bottom tabs (Sacos, Flete, Adelanto, Libro, Ajustes), Poner and Pedir chosen one at a time, and an intro that runs once.
+
+## Learned Workspace Facts
+
+- DeFiesta is the Mario Party-style crypto board game under `app/src/game/`. EnComún (`app/src/encomun/`) is the Comunidad Tica fund. The mounted app is PymeSolve: `app/src/App.tsx` renders `MarketApp` from `app/src/market/`. Do not mix the three products in one UI.
+- PymeSolve is a shared-problem marketplace for Costa Rica SMEs: similar counter-language problems in the same rubro become gemelos and one encargo. Encargo state lives in the `pools` contract; USDC waits in a Trustless Work retén until the carta and “Yo lo vi”. Sign-in is Cavos (email or Google). Names, barrio, and chat stay off-chain. XLM on that account only pays network fees. Three roles (pyme, oficio as `dev`, mesa as `admin`) each get a different tab bar and home in `MarketApp.tsx`.
+- EnComún shared testnet USDC is held by the `fondos` contract; category balances and Libro come from that contract; names stay off-chain. An adelanto is signed only by the asiento; a Sacos or Flete request stays locked until someone else confirms Yo lo vi, and neither the requester nor the tesorera can confirm. A deposit repays an outstanding adelanto before the rest enters the category.
+- The board is a single map: the street is the track and buildings sit between the spaces, with crypto, web3, and AI visual gags.
+- Dice play follows Mario Party timing: the camera closes on the current character, they jump and hit the die, and the die keeps spinning before showing the number.
+- Gemma 4 E2B runs locally via Ollama (`server/gemma.mjs`) for twin copy and Dopamina bullets; it never signs, never moves USDC, never verifies people, and never creates an encargo.
+- `node:sqlite` in `server/` rejects `.all([x])` (`Unknown named parameter '0'`); pass values as `.all(x)` or `.all(a, b)`, never an array.

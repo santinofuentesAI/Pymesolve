@@ -1,15 +1,15 @@
 ---
 name: scaffold-stellar
 description:
-  How this Scaffold Stellar project is wired - environments.toml, the npm start
-  dev loop that compiles, deploys to testnet and generates TypeScript clients,
-  adding a new Soroban contract, calling contracts from React (reads, signed
-  writes, events), CLI commands, troubleshooting and deployment. Use whenever
-  you add/rename/deploy a contract, touch environments.toml or app/.env, import
-  from @stellar-scaffold/app-lib, or the dev server/contract build fails.
+  How this Scaffold Stellar project is wired - scaffold.yml version 2, the npm
+  start dev loop that compiles, deploys to testnet and generates TypeScript
+  clients, adding a new Soroban contract, calling contracts from React (reads,
+  signed writes, events), CLI commands, troubleshooting and deployment. Use
+  whenever you add/rename/deploy a contract, touch scaffold.yml or app/.env,
+  import from @stellar-scaffold/app-lib, or the dev server/contract build fails.
 license: Apache-2.0
 metadata:
-  scaffold-cli: "stellar-scaffold-cli 0.0.27 (config v1: environments.toml)"
+  scaffold-cli: "stellar-scaffold-cli 0.0.28 (config v2: scaffold.yml, network testnet)"
   stellar-cli: ">=27"
 ---
 
@@ -19,19 +19,18 @@ Scaffold Stellar = Soroban contracts (Rust) + a Vite/React app, glued by a CLI
 plugin (`stellar scaffold`) that **builds → deploys → generates a typed TS
 client** for each contract every time you save.
 
-> ⚠️ Version: this repo uses the released CLI **0.0.27** with **config v1**:
-> `environments.toml`, and `scaffold.yml` with `version: 1`. The upstream
-> docs/skill at stellarscaffold.org now describe config **v2** (`networks:` and
-> `contracts:` in scaffold.yml). Do NOT convert this repo to v2 or follow v2
-> examples unless the user explicitly asks to migrate.
+> ⚠️ Version: this repo uses CLI **0.0.28** with **config v2**: `scaffold.yml`
+> at the repo root. `build` and `watch` use `STELLAR_NETWORK` (this project:
+> `testnet`). `environments.toml` is the previous format and is ignored while
+> `scaffold.yml` is version 2. Do not point the dev loop at `local` or mainnet.
 
 ## Map
 
 ```
 contracts/<crate>/            Rust/Soroban contracts (Cargo workspace members)
-environments.toml             which contracts deploy where (per STELLAR_SCAFFOLD_ENV)
+scaffold.yml                  which contracts deploy where (config v2, network testnet)
 app/                          Vite + React 19 + TS frontend (routes in app/src/App.tsx)
-app/.env                      STELLAR_SCAFFOLD_ENV, PUBLIC_* vars (copied from .env.example)
+app/.env                      STELLAR_NETWORK, PUBLIC_* vars (copied from .env.example)
 app/.config/stellar/          deployer identity + contract ids (gitignored, auto-created)
 app-lib/                      shared TS: network env, wallet (Stellar Wallets Kit), friendbot, events
 app-lib/clients/              GENERATED clients (gitignored, never edit) → import from "@stellar-scaffold/app-lib/clients"
@@ -44,18 +43,8 @@ app/src/trustless/            Trustless Work escrow integration (see trustless-w
 npm start            # from repo root: `stellar scaffold watch --build-clients` + `vite` (http://localhost:5173)
 ```
 
-- `development` targets **testnet** (no Docker). Ignore Scaffold's "Starting
-  local Stellar Docker container…" log line: it's cosmetic in CLI 0.0.27. The
-  app always runs on **http://localhost:5173** (`strictPort`); if the port is
-  busy, stop the other server. On first run it creates + funds the `me` deployer
-  account, compiles every contract, deploys the ones listed in
-  `environments.toml`, generates clients into `app-lib/clients/`. First run:
-  ~1–2 min. Vite may show "Failed to resolve import
-  @stellar-scaffold/app-lib/clients" until that finishes: wait.
-- Saving a `.rs` file, `Cargo.toml` or `environments.toml` triggers a rebuild +
-  redeploy (contracts with `upgrade(BytesN<32>)` are upgraded in place; others
-  get a NEW contract id, so on-chain state resets). Saves during a rebuild can
-  be missed: save again.
+- The working network is **testnet** (`STELLAR_NETWORK=testnet` in `app/.env`). Do not use `local`: that starts Docker. Ignore a leftover "Starting local Stellar Docker container…" line if it appears. The app runs on **http://localhost:5173** (`strictPort`); if the port is busy, stop the other server. On first run it creates + funds the `me` deployer account, compiles the contracts in `scaffold.yml`, deploys them to testnet, and generates clients into `app-lib/clients/`. First run: ~1–2 min. Vite may show "Failed to resolve import @stellar-scaffold/app-lib/clients" until that finishes: wait.
+- Saving a `.rs` file, `Cargo.toml` or `scaffold.yml` triggers a rebuild. A changed Wasm upgrades a contract that has `upgrade`, or deploys a new id otherwise. Changing only constructor `args` does not redeploy. Saves during a rebuild can be missed: save again.
 - Run Scaffold CLI commands **from `app/`** (or via the npm scripts), because
   `app/.env` sets `XDG_CONFIG_HOME=".config"` relative to the current directory.
 
@@ -69,17 +58,24 @@ build+deploy+clients), `npm run contracts:test` (`cargo test`), `npm run check`
    `src/test.rs`). Copy `contracts/reputation/Cargo.toml` and change
    `name`/`description`. Write it with the `soroban-contracts` skill. Run
    `cargo test -p <crate-name>`.
-2. Register it in `environments.toml` under `[development.contracts]` (and
-   `[staging.contracts]`):
-   ```toml
-   my_contract = { client = true }                                  # no constructor
-   my_contract = { client = true, constructor_args = "--admin me" } # __constructor(admin: Address)
+2. Register it in `scaffold.yml` under `contracts:`. The key is the client name
+   (this repo uses the crate name). `source` is the crate's `package.name`.
+   List `testnet` (and `staging` if it should exist there):
+   ```yaml
+   my-contract:
+     type: workspace
+     source: my-contract
+     args:
+       admin: ${account.me}
+     networks:
+       testnet:
+       staging:
+         args:
+           admin: ${account.testnet-user}
    ```
-   The key MUST be the crate name with `-` → `_` (`my-contract` →
-   `my_contract`). `me` is the deployer identity in `development`; in
-   `[staging.contracts]` use the staging account instead
-   (`--admin testnet-user`). `after_deploy = """\nfn_name --arg value\n"""` runs
-   invocations after deploy.
+   Omit `args` when the contract has no constructor. `me` is the deployer on
+   `testnet`. `client: false` still builds the contract; leave a crate out of
+   `contracts:` when it must not deploy.
 3. Save / keep `npm start` running (or `npm run contracts:build`). Watch the
    "stellar" logs.
 4. Import the generated client (camelCase of the key):
@@ -96,7 +92,7 @@ copies one (OpenZeppelin `oz/*` ones may need extra `[workspace.dependencies]`
 such as `stellar-contract-utils = "0.7.2"`; `stellar/*` examples currently fail
 on version mismatch). `--from-wizard` opens
 https://wizard.openzeppelin.com/stellar. `generate` never edits
-`environments.toml`: do step 2 yourself.
+`scaffold.yml`: do step 2 yourself.
 
 ## Calling contracts from React
 

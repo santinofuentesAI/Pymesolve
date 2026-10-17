@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "npm start",
-    "start": "concurrently --kill-others-on-fail --names stellar,vite -c gray,green --pad-prefix \"stellar scaffold watch --build-clients\" \"vite\"",
+		"start": "concurrently --kill-others-on-fail --names stellar,vite,mesa -c gray,green,yellow --pad-prefix \"stellar scaffold watch --build-clients\" \"vite\" \"node ../server/index.mjs\"",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -15,6 +15,10 @@
   },
   "dependencies": {
     "@cavos/kit": "0.2.5",
+    "@react-three/drei": "^10.0.0",
+    "@react-three/fiber": "^9.1.0",
+    "@react-three/postprocessing": "^3.0.4",
+    "postprocessing": "^6.37.0",
     "@stellar-scaffold/app-lib": "*",
     "@stellar/stellar-sdk": "^16.0.1",
     "@tanstack/react-query": "^5.90.17",
@@ -24,12 +28,16 @@
     "lossless-json": "^4.3.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^7.12.0"
+    "react-router-dom": "^7.12.0",
+    "three": "^0.171.0",
+    "liquid-glass-react": "^1.1.1",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.24",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
+    "@types/three": "^0.171.0",
     "@vitejs/plugin-react": "^6.0.0",
     "concurrently": "^9.2.1",
     "dotenv": "^17.4.2",
@@ -44,6 +52,6 @@
   },
   "prettier": "@theahaco/ts-config/prettier",
   "engines": {
-    "stellar-scaffold": ">=0.0.24"
+    "stellar-scaffold": ">=0.0.28"
   }
 }

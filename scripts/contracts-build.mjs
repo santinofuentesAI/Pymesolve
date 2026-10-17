@@ -11,6 +11,12 @@ const app = resolve(dirname(fileURLToPath(import.meta.url)), "../app")
 const child = spawn("stellar", ["scaffold", "build", "--build-clients"], {
 	cwd: app,
 	stdio: ["inherit", "pipe", "pipe"],
+	env: {
+		...process.env,
+		// Absolute: scaffold.yml lives in the repo root, and a relative
+		// XDG_CONFIG_HOME=".config" makes the CLI miss the testnet aliases.
+		XDG_CONFIG_HOME: resolve(app, ".config"),
+	},
 })
 
 const failures = []

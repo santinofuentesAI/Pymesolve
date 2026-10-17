@@ -55,7 +55,7 @@ export const ReputationPanel = ({
 			// `///` doc comment in the Rust source.
 			if (tx.result.isErr()) throw new Error(tx.result.unwrapErr().message)
 			await tx.signAndSend({ signTransaction })
-			addNotification("Review saved on-chain ⭐", "success")
+			addNotification("La reseña quedó en la cadena", "success")
 			setComment("")
 			await queryClient.invalidateQueries({ queryKey: ["reputation", subject] })
 		} catch (e) {
@@ -72,9 +72,9 @@ export const ReputationPanel = ({
 	return (
 		<div className={styles.panel}>
 			<div className={styles.header}>
-				<strong>Reputation</strong>
+				<strong>Oficio en cadena</strong>
 				<span className={styles.score}>
-					{isLoading ? "…" : `★ ${average} (${score?.count ?? 0} reviews)`}
+					{isLoading ? "…" : `★ ${average} (${score?.count ?? 0} reseñas)`}
 				</span>
 			</div>
 
@@ -83,7 +83,7 @@ export const ReputationPanel = ({
 					{[...data.reviews].reverse().map((r) => (
 						<li key={`${r.reviewer}-${r.escrow}`}>
 							<span>{"★".repeat(r.rating)}</span>{" "}
-							{r.comment || <em>no comment</em>}
+							{r.comment || <em>sin comentario</em>}
 						</li>
 					))}
 				</ul>
@@ -103,13 +103,13 @@ export const ReputationPanel = ({
 						))}
 					</select>
 					<input
-						placeholder="Leave a short review (optional)"
+						placeholder="Una reseña corta (opcional)"
 						maxLength={280}
 						value={comment}
 						onChange={(e) => setComment(e.target.value)}
 					/>
 					<button onClick={() => void submit()} disabled={sending}>
-						{sending ? "Signing…" : "Review"}
+						{sending ? "Confirmá en la wallet…" : "Calificar"}
 					</button>
 				</div>
 			)}

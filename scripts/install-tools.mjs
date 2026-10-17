@@ -15,10 +15,10 @@ import {
 	writeFileSync,
 } from "node:fs"
 import { homedir, tmpdir } from "node:os"
-import { join } from "node:path"
+import { delimiter, join } from "node:path"
 
 const STELLAR_CLI = "28.1.0"
-const SCAFFOLD_CLI = "0.0.27"
+const SCAFFOLD_CLI = "0.0.28"
 
 const has = (cmd) => {
 	try {
@@ -47,6 +47,7 @@ if (!triple) {
 const exe = process.platform === "win32" ? ".exe" : ""
 const binDir = join(homedir(), ".cargo", "bin")
 mkdirSync(binDir, { recursive: true })
+process.env.PATH = `${binDir}${delimiter}${process.env.PATH ?? ""}`
 
 async function install(name, url, binary) {
 	console.log(`↓ ${name}: ${url}`)
@@ -91,7 +92,14 @@ else if (triple === "aarch64-pc-windows-msvc") {
 	)
 }
 
-if (has("stellar scaffold --version"))
+const scaffoldVersion = (() => {
+	try {
+		return execSync("stellar scaffold --version", { encoding: "utf8" })
+	} catch {
+		return ""
+	}
+})()
+if (scaffoldVersion.includes(SCAFFOLD_CLI))
 	console.log("✓ Scaffold plugin already installed")
 else {
 	await install(

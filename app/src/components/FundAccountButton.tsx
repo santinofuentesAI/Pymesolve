@@ -22,9 +22,9 @@ const FundAccountButton: React.FC = () => {
 		<button
 			disabled={isPending}
 			onClick={handleFundAccount}
-			title="Fund your account with test XLM via Friendbot"
+			title="Cargar XLM de prueba con Friendbot"
 		>
-			Fund Account
+			Cargar cuenta
 		</button>
 	)
 }

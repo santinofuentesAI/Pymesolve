@@ -30,9 +30,14 @@ export default defineConfig({
 		// (http://localhost:5173), so fail loudly instead of moving to 5174.
 		port: 5173,
 		strictPort: true,
+		host: true,
 		proxy: {
 			"/friendbot": {
 				target: "http://localhost:8000/friendbot",
+				changeOrigin: true,
+			},
+			"/api": {
+				target: "http://127.0.0.1:8787",
 				changeOrigin: true,
 			},
 		},

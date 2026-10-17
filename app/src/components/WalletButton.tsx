@@ -1,50 +1,48 @@
-import {
-	connectWallet,
-	profileModal,
-	shortAddress,
-} from "@stellar-scaffold/app-lib"
+import { connectWallet, profileModal, shortAddress } from "@stellar-scaffold/app-lib"
 import { useCavosState } from "../cavos/context"
 import { useWallet } from "../hooks/useWallet"
+import { USDC_BALANCE_KEY } from "../trustless/config"
 
 export const WalletButton = () => {
 	const { address, connector, isPending, balances, disconnect } = useWallet()
 	const cavos = useCavosState()
+	const usdc = balances[USDC_BALANCE_KEY]?.balance
 
-	// Signed in with Cavos on a browser that doesn't hold the wallet key yet.
 	if (!address && cavos?.needsDeviceApproval) {
 		return (
 			<div className="wallet-connected">
-				<button onClick={() => void cavos.approveDevice()}>
-					Unlock wallet with passkey
+				<button type="button" onClick={() => void cavos.approveDevice()}>
+					Desbloquear con passkey
 				</button>
-				<button onClick={cavos.signOut}>Sign out</button>
+				<button type="button" onClick={cavos.signOut}>
+					Salir
+				</button>
 			</div>
 		)
 	}
 
 	if (!address) {
-		if (!cavos) {
-			return (
-				<button onClick={() => void connectWallet()} disabled={isPending}>
-					{isPending ? "Loading..." : "Connect"}
-				</button>
-			)
-		}
 		return (
 			<div className="wallet-connected">
+				{cavos ? (
+					<button
+						type="button"
+						className="wallet-primary"
+						onClick={() => cavos.signIn()}
+						disabled={cavos.isLoading || isPending}
+						title="Correo o Google: te arma una cuenta Stellar (Cavos)"
+					>
+						{cavos.isLoading || isPending ? "Entrando…" : "Entrar"}
+					</button>
+				) : null}
 				<button
-					className="wallet-primary"
-					onClick={cavos.signIn}
-					disabled={cavos.isLoading}
-					title="Email or Google: creates a Stellar wallet for you, no extension needed (Cavos)"
-				>
-					{cavos.isLoading ? "Signing in..." : "Sign in"}
-				</button>
-				<button
+					type="button"
+					className={cavos ? undefined : "wallet-primary"}
 					onClick={() => void connectWallet()}
-					title="Freighter, xBull, Lobstr… (Stellar Wallets Kit)"
+					disabled={isPending}
+					title="Freighter, xBull, Lobstr… (red Stellar)"
 				>
-					Use a wallet
+					{isPending ? "Conectando…" : "Usar una wallet"}
 				</button>
 			</div>
 		)
@@ -52,26 +50,22 @@ export const WalletButton = () => {
 
 	return (
 		<div className="wallet-connected" style={{ opacity: isPending ? 0.6 : 1 }}>
-			<span className="wallet-balance">
-				{balances?.xlm?.balance ?? "-"} XLM
-			</span>
-
+			<span className="wallet-balance">{usdc ?? "0"} USDC</span>
 			{connector === "cavos" ? (
 				<>
 					<span className="wallet-balance" title={address}>
 						{cavos?.email ?? shortAddress(address)}
 					</span>
-					<button
-						className="wallet-profile"
-						title="Copy address"
-						onClick={() => void navigator.clipboard.writeText(address)}
-					>
-						{shortAddress(address)}
+					<button type="button" onClick={() => void disconnect()}>
+						Salir
 					</button>
-					<button onClick={() => void disconnect()}>Sign out</button>
 				</>
 			) : (
-				<button className="wallet-profile" onClick={() => void profileModal()}>
+				<button
+					type="button"
+					className="wallet-profile"
+					onClick={() => void profileModal()}
+				>
 					{shortAddress(address)}
 				</button>
 			)}

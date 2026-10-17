@@ -15,5 +15,5 @@ export function errorMessage(e: unknown): string {
 			return e.message
 		}
 	}
-	return "Something went wrong. Check the browser console for details."
+	return "Algo falló. Mirá la consola del navegador."
 }

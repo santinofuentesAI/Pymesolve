@@ -42,20 +42,20 @@ export function useEscrowTx() {
 		> => {
 			if (!isTrustlessWorkConfigured) {
 				addNotification(
-					"Add PUBLIC_TRUSTLESS_WORK_API_KEY to app/.env first",
+					"Falta PUBLIC_TRUSTLESS_WORK_API_KEY en app/.env",
 					"warning",
 				)
 				return
 			}
 			if (!address) {
-				addNotification("Connect your wallet first", "warning")
+				addNotification("Conectá la wallet primero", "warning")
 				return
 			}
 			setPending(label)
 			try {
 				const { unsignedTransaction, status } = await build()
 				if (status !== "SUCCESS" || !unsignedTransaction) {
-					throw new Error(`${label}: the API could not build the transaction`)
+					throw new Error(`${label}: la API no pudo armar la transacción`)
 				}
 				const { signedTxXdr } = await signTransaction(unsignedTransaction, {
 					address,
@@ -69,7 +69,7 @@ export function useEscrowTx() {
 				return res
 			} catch (e) {
 				console.error(label, e)
-				addNotification(`${label} failed: ${errorMessage(e)}`, "error")
+				addNotification(`${label} falló: ${errorMessage(e)}`, "error")
 			} finally {
 				setPending(null)
 			}

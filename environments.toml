@@ -1,7 +1,8 @@
 ### ─────────────────────────────────────────────────────────────────────────────
-### Scaffold Stellar environments
+### Scaffold Stellar environments (legacy v1, ignored)
 ###
-### Which section is used is decided by STELLAR_SCAFFOLD_ENV (set in app/.env).
+### scaffold.yml version 2 is the file the CLI reads. This toml is kept so the
+### old contract list stays visible. Do not treat it as the live config.
 ### This workshop uses TESTNET for `development` because Trustless Work escrows
 ### only exist on testnet/mainnet (there is no local Trustless Work), and it
 ### means you don't need Docker. Everything here is free test money.
@@ -27,6 +28,8 @@ default = true
 #   import { reputation } from "@stellar-scaffold/app-lib/clients"
 # The key must be the snake_case version of the crate `name` in its Cargo.toml.
 reputation = { client = true }
+pools = { client = true, constructor_args = "--admin me" }
+fondos = { client = true, constructor_args = "--admin me --usdc CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA" }
 
 # OpenZeppelin examples that ship with Scaffold: compiled as references but NOT
 # deployed. Scaffold tries to deploy every crate in contracts/, so any contract you
@@ -59,6 +62,8 @@ default = true
 
 [staging.contracts]
 reputation = { client = true }
+pools = { client = true, constructor_args = "--admin testnet-user" }
+fondos = { client = true, constructor_args = "--admin testnet-user --usdc CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA" }
 fungible_allowlist_example = { client = false }
 nft_enumerable_example = { client = false }
 

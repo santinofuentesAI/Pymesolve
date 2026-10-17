@@ -45,3 +45,14 @@ app-lib/clients/*
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# Cursor local hook state
+.cursor/hooks/state/
+
+# EnComún / PymeSolve local mesa
+server/encomun.sqlite
+server/encomun.sqlite-wal
+server/encomun.sqlite-shm
+server/pymesolve.sqlite
+server/pymesolve.sqlite-wal
+server/pymesolve.sqlite-shm

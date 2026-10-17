@@ -1,17 +1,46 @@
-version: 1
+version: 2
 
-# Scaffold CLI Configuration
-config:
-  # Your Rust/Soroban contract source.
-  # contracts_dir: contracts
+project:
+  contracts-dir: contracts
+  clients-dir: app-lib/clients
 
-  # The generated TypeScript contract layer your app imports. The CLI writes
-  # and regenerates everything here on build/redeploy, so you normally don't
-  # edit it by hand:
-  #   - app-lib/clients/<name>/   one generated Binding package per contract
-  #   - app-lib/clients/index.ts  one flattened file that instantiates every
-  #                               Contract Client, imported in app code as
-  #                               `@stellar-scaffold/app-lib/clients`
-  # To customize a client, import it into your own code under app/ instead of
-  # editing the generated file. Everything here is gitignored except .gitkeep.
-  # clients_dir: app-lib/clients
+networks:
+  testnet:
+    accounts: [me]
+    default-account: me
+    allow-deploy: true
+  staging:
+    extends: testnet
+    accounts: [testnet-user]
+    default-account: testnet-user
+    allow-deploy: true
+
+contracts:
+  reputation:
+    type: workspace
+    source: reputation
+    networks:
+      testnet:
+      staging:
+  pools:
+    type: workspace
+    source: pools
+    args:
+      admin: ${account.me}
+    networks:
+      testnet:
+      staging:
+        args:
+          admin: ${account.testnet-user}
+  fondos:
+    type: workspace
+    source: fondos
+    args:
+      admin: ${account.me}
+      usdc: CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA
+    networks:
+      testnet:
+      staging:
+        args:
+          admin: ${account.testnet-user}
+          usdc: CBIELTK6YBZJU5UP2WWQEUCYKLPU6AUNZ2BQ4WWFEIE3USCIHMXQDAMA
