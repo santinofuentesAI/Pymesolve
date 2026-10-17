@@ -1,12 +1,11 @@
 # PymeSolve
 
-¿Quién te soluciona?. Una pequeña/mediana empresa publica un problema en esta app. Si otra tiene el mismo, se juntan ambos problemas en una sola publicación (una IA entrenada se encarga). Un freelancer verificado ve el encargo, lo acepta y se pone a trabajar en la solución de su problema, todo bajo el sello Stellar, Trustless Work y Cavos. 
+¿Quién te soluciona?. Una pequeña/mediana empresa publica un problema en esta app. Si otra tiene el mismo, se juntan ambos problemas en una sola publicación (una IA entrenada se encarga). Un freelancer verificado ve el encargo, lo acepta y se pone a trabajar en la solución del problema, todo bajo el sello Stellar, Trustless Work y Cavos. 
 
-Está hecha para pymes de Costa Rica, en testnet. La plata de prueba no vale. El XLM de la cuenta solo paga la comisión de la red.
+Adiós wallets complicadas de criptomonedas, y bienvenido el pago seguro, con baja comisión y de forma sencilla para que los negocios resuelvan sus problemas, sin tener que buscar exhaustivamente solución, y darle oportunidades a los freelancers de aparte de solucionar tengan una buena relación con estas Pymes para futuras colaboraciones. 
 
-## El caso que abre
+Tiene un modo scroll semi infinito donde están problemas de Pymes o perfiles  personas, a la derecha se guarda💚, a la izquierda se va❌. En Encargos se ve **Gente que me sirve** listada con perfil y un chat directo.
 
-Sin entrar se ve el encargo de ejemplo: Soda El Casado, Pulpería Doña Lidi y Salón Nidia piden un video de unos 20 segundos. Cada una pone 10. La meta es **30 USDC**. Un oficio cobra esa meta una vez, no tres trabajos sueltos.
 
 ## Tres formas de usarla
 
@@ -17,8 +16,6 @@ La misma app cambia de pies a cabeza según quién entra. El cambio de persona d
 | Pyme | Publica un problema y sigue su parte del encargo. | Problemas, Encargos, Publicar, Libro, Ajustes |
 | Oficio | Toma un encargo y deja la carta. | Ofertas, Encargos, Chats, Libro, Ajustes |
 | Mesa | Mira altas y, si hay pelea, parte el USDC. No publica ni toma encargos. | Mesa, Altas, Chats, Libro, Ajustes |
-
-Dopamina no es una pestaña. Desde Problemas se puede pasar oficios como un mazo: a la derecha se guarda, a la izquierda se va. En Encargos, **Gente que me sirve** lista a esas personas en una oración, con perfil y un chat directo.
 
 La búsqueda es una frase y un resultado. El Libro muestra quién se sumó, depositó o tomó el encargo. Una pyme ve su nombre y al resto como “Un comercio”. La mesa sí ve los nombres.
 
