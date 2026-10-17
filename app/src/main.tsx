@@ -9,6 +9,12 @@ import { NotificationProvider } from "./providers/NotificationProvider.tsx"
 import { WalletProvider } from "./providers/WalletProvider.tsx"
 import { TrustlessWorkProvider } from "./trustless/TrustlessWorkProvider.tsx"
 
+if (window.location.hostname === "127.0.0.1") {
+	const here = new URL(window.location.href)
+	here.hostname = "localhost"
+	window.location.replace(here.href)
+}
+
 const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {

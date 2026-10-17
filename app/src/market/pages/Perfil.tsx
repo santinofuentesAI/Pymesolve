@@ -101,9 +101,34 @@ export function Perfil() {
 					))}
 				</div>
 			)}
-			{me.kind === "dev" && me.verified && (
+			{me.kind === "dev" ? (
+				<ul className={styles.bullets}>
+					{me.drive ? (
+						<li>
+							<a href={me.drive} target="_blank" rel="noreferrer">
+								Drive
+							</a>
+						</li>
+					) : null}
+					{me.social ? (
+						<li>
+							<a href={me.social} target="_blank" rel="noreferrer">
+								Página
+							</a>
+						</li>
+					) : null}
+					{me.linkedin ? (
+						<li>
+							<a href={me.linkedin} target="_blank" rel="noreferrer">
+								LinkedIn o Fiverr
+							</a>
+						</li>
+					) : null}
+				</ul>
+			) : null}
+			{me.kind === "dev" && me.verified ? (
 				<div>
-					{gh.data && (
+					{gh.data ? (
 						<div className={styles.card}>
 							<p className={styles.kicker}>GitHub</p>
 							<p>
@@ -120,8 +145,8 @@ export function Perfil() {
 								))}
 							</ul>
 						</div>
-					)}
-					{done.length > 0 && (
+					) : null}
+					{done.length > 0 ? (
 						<div className={styles.list}>
 							{done.map((p) => (
 								<div key={p.id} className={styles.listRow}>
@@ -132,32 +157,9 @@ export function Perfil() {
 								</div>
 							))}
 						</div>
-					)}
-					<ul className={styles.bullets}>
-						{me.drive ? (
-							<li>
-								<a href={me.drive} target="_blank" rel="noreferrer">
-									Drive
-								</a>
-							</li>
-						) : null}
-						{me.social ? (
-							<li>
-								<a href={me.social} target="_blank" rel="noreferrer">
-									Portafolio
-								</a>
-							</li>
-						) : null}
-						{me.linkedin ? (
-							<li>
-								<a href={me.linkedin} target="_blank" rel="noreferrer">
-									LinkedIn o Fiverr
-								</a>
-							</li>
-						) : null}
-					</ul>
+					) : null}
 				</div>
-			)}
+			) : null}
 			{me.id === actorId && (
 				<p>
 					<Link className={styles.link} to="/ajustes">

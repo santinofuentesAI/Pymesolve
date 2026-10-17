@@ -151,6 +151,20 @@ CREATE TABLE IF NOT EXISTS interests (
 	created_at TEXT NOT NULL,
 	UNIQUE (actor_id, target_id, kind)
 );
+CREATE TABLE IF NOT EXISTS dms (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	low_id TEXT NOT NULL,
+	high_id TEXT NOT NULL,
+	created_at TEXT NOT NULL,
+	UNIQUE (low_id, high_id)
+);
+CREATE TABLE IF NOT EXISTS dm_messages (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	dm_id INTEGER NOT NULL,
+	actor_id TEXT NOT NULL,
+	body TEXT NOT NULL,
+	created_at TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS offers (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	pool_id INTEGER NOT NULL,
@@ -316,6 +330,14 @@ function upsertDev(row, now) {
 		row.linkedin || null,
 		row.id,
 	)
+	if (row.drive) {
+		const proof = db
+			.prepare("SELECT id FROM proofs WHERE user_id = ? AND kind = 'drive'")
+			.get(row.id)
+		if (proof) {
+			db.prepare("UPDATE proofs SET url = ? WHERE id = ?").run(row.drive, proof.id)
+		}
+	}
 	db.prepare("DELETE FROM card_copy WHERE key LIKE ?").run(`user:${row.id}:%`)
 }
 
@@ -393,6 +415,8 @@ function ensureSeedPeople() {
 }
 
 const WIPE = [
+	"dm_messages",
+	"dms",
 	"interests",
 	"offers",
 	"card_copy",

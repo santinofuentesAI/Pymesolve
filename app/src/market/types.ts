@@ -30,6 +30,15 @@ export type User = {
 	pedido?: { title: string; body: string; category: string }
 }
 
+export type Liked = {
+	id: string
+	name: string
+	kind: Role
+	trade: string
+	neighborhood: string
+	line: string
+}
+
 export type Problem = {
 	id: number
 	pymeId: string
@@ -98,6 +107,15 @@ export type Pool = {
 		puntos: string[]
 		ia: boolean
 	}
+}
+
+export type DirectMessage = {
+	id: number
+	actor_id: string
+	actor_name: string
+	role: Role
+	body: string
+	created_at: string
 }
 
 export type ChatMessage = {

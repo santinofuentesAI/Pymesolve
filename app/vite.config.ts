@@ -2,10 +2,18 @@ import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { nodePolyfills } from "vite-plugin-node-polyfills"
 import wasm from "vite-plugin-wasm"
+import { cavosGoogleRedirectPlugin } from "./cavos-redirect-patch.mjs"
 
 // https://vite.dev/config/
+// @cavos/kit@0.2.5 ignores config.redirectUri. This plugin forces the URI
+// registered in the Cavos dashboard. It also runs during dep optimization,
+// which is the bundle the dev server actually serves.
+const cavosGoogleRedirect = cavosGoogleRedirectPlugin()
+const present = process.env.PYMESOLVE_PRESENT === "1"
+
 export default defineConfig({
 	plugins: [
+		cavosGoogleRedirect,
 		react(),
 		nodePolyfills({
 			include: ["buffer"],
@@ -20,6 +28,9 @@ export default defineConfig({
 	},
 	optimizeDeps: {
 		exclude: ["@stellar/stellar-xdr-json"],
+		rolldownOptions: {
+			plugins: [cavosGoogleRedirect],
+		},
 	},
 	define: {
 		global: "window",
@@ -31,6 +42,10 @@ export default defineConfig({
 		port: 5173,
 		strictPort: true,
 		host: true,
+		// Durante la demo no hay recarga en caliente: un reinicio a mitad
+		// del correo deja a Cavos colgado en "Connecting".
+		hmr: present ? false : undefined,
+		watch: present ? { ignored: ["**"] } : undefined,
 		proxy: {
 			"/friendbot": {
 				target: "http://localhost:8000/friendbot",

@@ -1,11 +1,13 @@
 import { modeHeaders } from "./mode"
 import {
 	type ChatMessage,
+	type DirectMessage,
 	type Offer,
 	type Pool,
 	type Problem,
 	type TwinGroup,
 	type TwinLook,
+	type Liked,
 	type User,
 } from "./types"
 
@@ -68,6 +70,19 @@ export const api = {
 		req<{ ok: boolean }>("/api/interests", {
 			method: "POST",
 			body: JSON.stringify({ targetId, kind }),
+		}),
+	liked: () => req<Liked[]>("/api/interests"),
+	openChat: (targetId: string) =>
+		req<{ id: number }>("/api/dms", {
+			method: "POST",
+			body: JSON.stringify({ targetId }),
+		}),
+	directMessages: (id: number) =>
+		req<DirectMessage[]>(`/api/dms/${id}/messages`),
+	sendDirect: (id: number, body: string) =>
+		req<DirectMessage[]>(`/api/dms/${id}/messages`, {
+			method: "POST",
+			body: JSON.stringify({ body }),
 		}),
 	offers: (poolId: number) => req<Offer[]>(`/api/pools/${poolId}/offers`),
 	proposeOffer: (poolId: number, amountUsdc: number, note = "") =>

@@ -30,7 +30,7 @@ export const WalletButton = () => {
 						className="wallet-primary"
 						onClick={() => cavos.signIn()}
 						disabled={cavos.isLoading || isPending}
-						title="Correo o Google: te arma una cuenta Stellar (Cavos)"
+						title="Correo o Google. Te arma la cuenta."
 					>
 						{cavos.isLoading || isPending ? "Entrando…" : "Entrar"}
 					</button>

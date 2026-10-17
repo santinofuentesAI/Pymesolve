@@ -25,6 +25,14 @@ export const cavosNetwork =
 
 export const isCavosConfigured = cavosAppId.length > 0 && cavosNetwork !== null
 
+/** Google callback. Cavos dashboard has localhost, not 127.0.0.1, and no slash. */
+export const CAVOS_DEV_ORIGIN = "http://localhost:5173"
+
+export function cavosRedirectUri(): string {
+	if (cavosEnvironment === "development") return CAVOS_DEV_ORIGIN
+	return window.location.origin
+}
+
 /** Cavos console environment (separate gas pool, origins, keys). */
 export const cavosEnvironment: "development" | "production" =
 	import.meta.env.PUBLIC_CAVOS_ENVIRONMENT === "production"

@@ -10,6 +10,7 @@ import { Dopamina } from "./pages/Dopamina"
 import { Chats } from "./pages/Chats"
 import { Encargo } from "./pages/Encargo"
 import { Encargos } from "./pages/Encargos"
+import { GenteChat } from "./pages/GenteChat"
 import { Libro } from "./pages/Libro"
 import { MesaInicio } from "./pages/MesaInicio"
 import { Perfil } from "./pages/Perfil"
@@ -87,6 +88,7 @@ export default function MarketApp() {
 						<Route path="/encargos" element={<Encargos />} />
 						<Route path="/encargo/:id" element={<Encargo />} />
 						<Route path="/chats" element={<Chats />} />
+						<Route path="/chats/gente/:id" element={<GenteChat />} />
 						<Route path="/chats/:id" element={<Chats />} />
 						<Route path="/publicar" element={<Publicar />} />
 						<Route path="/libro" element={<Libro />} />

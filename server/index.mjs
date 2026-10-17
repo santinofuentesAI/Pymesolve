@@ -52,6 +52,17 @@ function actorOf(req) {
 	}
 }
 
+function unaOracion(text) {
+	const clean = String(text ?? "")
+		.replace(/\s+/g, " ")
+		.trim()
+	if (!clean) return "Todavía no se presentó."
+	const cut = clean.search(/[.!?]/)
+	const line = cut === -1 ? clean : clean.slice(0, cut + 1)
+	if (line.length <= 160) return line
+	return `${line.slice(0, 157).trimEnd()}…`
+}
+
 function poolMembers(poolId) {
 	return db
 		.prepare(
@@ -394,6 +405,100 @@ const server = createServer(async (req, res) => {
 				})
 			}
 			return send(res, 200, { cards })
+		}
+
+		if (path === "/api/interests" && req.method === "GET") {
+			if (!actor.id) return send(res, 200, [])
+			const rows = db
+				.prepare(
+					`SELECT u.id, u.name, u.kind, u.bio, u.trade, u.neighborhood
+					 FROM interests i JOIN users u ON u.id = i.target_id
+					 WHERE i.actor_id = ?
+					 ORDER BY i.id DESC`,
+				)
+				.all(actor.id)
+			return send(
+				res,
+				200,
+				rows.map((row) => ({
+					id: row.id,
+					name: row.name,
+					kind: row.kind,
+					trade: row.trade,
+					neighborhood: row.neighborhood,
+					line: unaOracion(row.bio),
+				})),
+			)
+		}
+
+		if (path === "/api/dms" && req.method === "POST") {
+			const body = await readBody(req)
+			const target = String(body.targetId ?? "")
+			if (!actor.id || !target || target === actor.id) {
+				return send(res, 400, { error: "Elegí a quién le escribís." })
+			}
+			const liked = db
+				.prepare(
+					"SELECT 1 AS ok FROM interests WHERE actor_id = ? AND target_id = ?",
+				)
+				.get(actor.id, target)
+			const likedBack = db
+				.prepare(
+					"SELECT 1 AS ok FROM interests WHERE actor_id = ? AND target_id = ?",
+				)
+				.get(target, actor.id)
+			if (!liked && !likedBack) {
+				return send(res, 403, { error: "Primero marcá Me sirve." })
+			}
+			const low = actor.id < target ? actor.id : target
+			const high = actor.id < target ? target : actor.id
+			db.prepare(
+				`INSERT INTO dms (low_id, high_id, created_at) VALUES (?, ?, ?)
+				 ON CONFLICT(low_id, high_id) DO NOTHING`,
+			).run(low, high, nowIso())
+			const row = db
+				.prepare("SELECT id FROM dms WHERE low_id = ? AND high_id = ?")
+				.get(low, high)
+			return send(res, 200, { id: row.id })
+		}
+
+		const dmMatch = path.match(/^\/api\/dms\/(\d+)\/messages$/)
+		if (dmMatch) {
+			const dmId = Number(dmMatch[1])
+			const dm = db.prepare("SELECT * FROM dms WHERE id = ?").get(dmId)
+			if (!dm) return send(res, 404, { error: "No está ese chat." })
+			if (actor.id !== dm.low_id && actor.id !== dm.high_id) {
+				return send(res, 403, { error: "Ese chat no es tuyo." })
+			}
+			if (req.method === "GET") {
+				const rows = db
+					.prepare(
+						`SELECT m.id, m.actor_id, u.name AS actor_name, u.kind AS role, m.body, m.created_at
+						 FROM dm_messages m JOIN users u ON u.id = m.actor_id
+						 WHERE m.dm_id = ?
+						 ORDER BY m.id`,
+					)
+					.all(dmId)
+				return send(res, 200, rows)
+			}
+			if (req.method === "POST") {
+				const body = await readBody(req)
+				const text = String(body.body ?? "").trim()
+				if (!text) return send(res, 400, { error: "Escribí algo." })
+				db.prepare(
+					`INSERT INTO dm_messages (dm_id, actor_id, body, created_at)
+					 VALUES (?, ?, ?, ?)`,
+				).run(dmId, actor.id, text.slice(0, 500), nowIso())
+				const rows = db
+					.prepare(
+						`SELECT m.id, m.actor_id, u.name AS actor_name, u.kind AS role, m.body, m.created_at
+						 FROM dm_messages m JOIN users u ON u.id = m.actor_id
+						 WHERE m.dm_id = ?
+						 ORDER BY m.id`,
+					)
+					.all(dmId)
+				return send(res, 201, rows)
+			}
 		}
 
 		if (path === "/api/interests" && req.method === "POST") {

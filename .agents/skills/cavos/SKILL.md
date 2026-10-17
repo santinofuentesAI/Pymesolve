@@ -65,7 +65,9 @@ exactly the "API builds, wallet signs, API submits" seam Trustless Work uses.
    deployed URL). Without it the vault refuses to load:
    `kit/vault: add <origin> to this app's allowed web origins`.
 3. For Google login: **Callback URLs** → add `http://localhost:5173` exactly (no
-   trailing slash). `CavosRoot` sets `redirectUri: window.location.origin`.
+   trailing slash). `@cavos/kit@0.2.5` ignores `config.redirectUri` and would
+   send `origin + pathname` (`http://localhost:5173/`). `app/vite.config.ts`
+   rewrites that call, and the callback exchange, to `http://localhost:5173`.
    Email codes need no callback.
 4. `app/.env`: `PUBLIC_CAVOS_APP_ID="…"` (public by design, safe in the
    browser), restart `npm start`.

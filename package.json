@@ -23,6 +23,7 @@
     "tw:smoke": "node scripts/tw-smoke.mjs",
     "agents:sync": "node scripts/agents-sync.mjs",
     "agents:check": "node scripts/agents-sync.mjs --check",
+    "present": "node scripts/present.mjs --hold",
     "postinstall": "node scripts/agents-sync.mjs"
   },
   "workspaces": [

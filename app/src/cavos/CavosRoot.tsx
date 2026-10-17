@@ -5,6 +5,7 @@ import {
 	cavosAppId,
 	cavosEnvironment,
 	cavosNetwork,
+	cavosRedirectUri,
 	isCavosConfigured,
 } from "./config"
 import { CavosContext, type CavosState } from "./context"
@@ -29,8 +30,9 @@ export const CavosRoot = ({ children }: { children: ReactNode }) => {
 				// One chain + passkey restore: works without enabling social
 				// recovery in the dashboard. Signing up never asks for a passkey.
 				deviceApproval: "passkey",
-				// Google login returns here: register this exact URL in the dashboard.
-				redirectUri: window.location.origin,
+				// The kit 0.2.5 ignores this. The Vite plugin in app/vite.config.ts
+				// sends http://localhost:5173 (no slash) for Google and the callback.
+				redirectUri: cavosRedirectUri(),
 			}}
 			modal={{
 				appName: "PymeSolve",

@@ -106,6 +106,10 @@ export function Ajustes() {
 				<p>Listo{cavos?.email ? `, ${cavos.email}` : ""}.</p>
 			) : (
 				<>
+					<p className={styles.lede}>
+						Correo o Google te arma la cuenta. No hace falta una wallet. Abrí
+						la app en localhost, no en 127.0.0.1.
+					</p>
 					{cavos ? (
 						<button
 							type="button"

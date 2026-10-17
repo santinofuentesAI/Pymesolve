@@ -6,7 +6,7 @@ import { formatUsdc } from "../money"
 import { currentPhase, type PhaseId } from "../phases"
 import { setAppMode } from "../theme"
 import styles from "../styles.module.css"
-import { type Pool, type Role } from "../types"
+import { type Liked, type Pool, type Role } from "../types"
 
 function frase(role: Role, fase: PhaseId, taken: boolean): string {
 	if (role === "dev" && fase === "oficio" && !taken) return "Este paso es tuyo."
@@ -37,10 +37,47 @@ function boton(role: Role, fase: PhaseId, taken: boolean): string {
 	return "Seguir este encargo"
 }
 
+function GenteQueMeSirve({ people }: { people: Liked[] }) {
+	if (people.length === 0) {
+		return (
+			<div>
+				<p className={styles.kicker}>Gente que me sirve</p>
+				<p className={styles.empty}>
+					Pasá gente. A la derecha se guarda acá, con perfil y chat.
+				</p>
+			</div>
+		)
+	}
+	return (
+		<div>
+			<h2>Gente que me sirve</h2>
+			<div className={styles.list}>
+				{people.map((person) => (
+					<article key={person.id} className={styles.card}>
+						<p>
+							<strong>{person.name}</strong>
+						</p>
+						<p>{person.line}</p>
+						<div className={styles.row}>
+							<Link to={`/perfil/${person.id}`}>Perfil</Link>
+							<Link to={`/chats/gente/${person.id}`}>Escribir</Link>
+						</div>
+					</article>
+				))}
+			</div>
+		</div>
+	)
+}
+
 export function Encargos() {
 	const { role, actorId } = useMode()
 	const nav = useNavigate()
 	const pools = useQuery({ queryKey: ["pools"], queryFn: api.pools })
+	const liked = useQuery({
+		queryKey: ["liked", actorId],
+		queryFn: api.liked,
+		enabled: role !== "admin",
+	})
 	const pool = (pools.data ?? []).find((p) => p.status !== "Cancelled") ?? pools.data?.[0]
 
 	if (pools.isLoading) return <p>Abriendo el encargo…</p>
@@ -54,6 +91,9 @@ export function Encargos() {
 						Publicar
 					</button>
 				</Link>
+				{role !== "admin" ? (
+					<GenteQueMeSirve people={liked.data ?? []} />
+				) : null}
 			</section>
 		)
 	}
@@ -132,6 +172,9 @@ export function Encargos() {
 						Chats de mis encargos
 					</Link>
 				</p>
+			) : null}
+			{role !== "admin" ? (
+				<GenteQueMeSirve people={liked.data ?? []} />
 			) : null}
 		</section>
 	)
