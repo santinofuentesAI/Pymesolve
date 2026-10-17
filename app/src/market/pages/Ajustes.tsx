@@ -123,58 +123,6 @@ export function Ajustes() {
 				</>
 			)}
 
-			<h2>Cómo usás la app</h2>
-			<p className={styles.lede}>
-				Pyme publica lo que le falta. Usuario toma encargos. Mesa mira altas y
-				chats.
-			</p>
-			<div className={styles.chips}>
-				{(
-					[
-						["pyme", "Pyme"],
-						["dev", "Usuario"],
-						["admin", "Mesa"],
-					] as [Role, string][]
-				).map(([id, label]) => (
-					<button
-						key={id}
-						type="button"
-						className={role === id ? styles.primary : undefined}
-						onClick={() => setMode({ role: id })}
-					>
-						{label}
-					</button>
-				))}
-			</div>
-			{role === "pyme" && (
-				<div className={styles.chips}>
-					{(pymes.data ?? []).map((p) => (
-						<button
-							key={p.id}
-							type="button"
-							className={actorId === p.id ? styles.primary : undefined}
-							onClick={() => setMode({ actorId: p.id, role: "pyme" })}
-						>
-							{p.name}
-						</button>
-					))}
-				</div>
-			)}
-			{role === "dev" && (
-				<div className={styles.chips}>
-					{(devs.data ?? []).map((d) => (
-						<button
-							key={d.id}
-							type="button"
-							className={actorId === d.id ? styles.primary : undefined}
-							onClick={() => setMode({ actorId: d.id, role: "dev" })}
-						>
-							{d.name}
-							{d.verified ? "" : " · revisión"}
-						</button>
-					))}
-				</div>
-			)}
 			{role === "admin" && (
 				<div className={styles.list}>
 					<Link className={styles.listRow} to="/mesa">
@@ -385,6 +333,60 @@ export function Ajustes() {
 			>
 				{sureReset ? "Sí, borrar y sembrar de nuevo" : "Volver a sembrar todo"}
 			</button>
+
+			<details className={styles.details}>
+				<summary>Probar como otra persona</summary>
+				<p className={styles.lede}>
+					Solo para esta máquina. Pyme publica, usuario toma, mesa mira.
+				</p>
+				<div className={styles.chips}>
+					{(
+						[
+							["pyme", "Pyme"],
+							["dev", "Usuario"],
+							["admin", "Mesa"],
+						] as [Role, string][]
+					).map(([id, label]) => (
+						<button
+							key={id}
+							type="button"
+							className={role === id ? styles.primary : undefined}
+							onClick={() => setMode({ role: id })}
+						>
+							{label}
+						</button>
+					))}
+				</div>
+				{role === "pyme" ? (
+					<div className={styles.chips}>
+						{(pymes.data ?? []).map((p) => (
+							<button
+								key={p.id}
+								type="button"
+								className={actorId === p.id ? styles.primary : undefined}
+								onClick={() => setMode({ actorId: p.id, role: "pyme" })}
+							>
+								{p.name}
+							</button>
+						))}
+					</div>
+				) : null}
+				{role === "dev" ? (
+					<div className={styles.chips}>
+						{(devs.data ?? []).map((d) => (
+							<button
+								key={d.id}
+								type="button"
+								className={actorId === d.id ? styles.primary : undefined}
+								onClick={() => setMode({ actorId: d.id, role: "dev" })}
+							>
+								{d.name}
+								{d.verified ? "" : " · revisión"}
+							</button>
+						))}
+					</div>
+				) : null}
+			</details>
 
 			<details className={styles.details}>
 				<summary>Cómo está hecha</summary>
