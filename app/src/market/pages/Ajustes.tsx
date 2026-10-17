@@ -107,8 +107,7 @@ export function Ajustes() {
 			) : (
 				<>
 					<p className={styles.lede}>
-						Correo o Google te arma la cuenta. No hace falta una wallet. Abrí
-						la app en localhost, no en 127.0.0.1.
+						Correo o Google te arma la cuenta. No hace falta una wallet.
 					</p>
 					{cavos ? (
 						<button

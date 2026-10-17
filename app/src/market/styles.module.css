@@ -155,9 +155,9 @@
 
 .plate {
 	display: flex;
-	justify-content: space-between;
-	align-items: flex-end;
-	gap: 0.8rem;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 0.35rem;
 	margin-top: 0.85rem;
 	padding: 0.75rem 0.8rem;
 	background: var(--fill);
@@ -166,17 +166,28 @@
 }
 
 .plate strong {
+	display: flex;
+	align-items: baseline;
+	gap: 0.45rem;
 	font-size: 2.35rem;
 	line-height: 0.9;
 	letter-spacing: -0.05em;
 }
 
-.plate span {
+.plate strong span,
+.plate > span {
 	font-family: "IBM Plex Mono", ui-monospace, monospace;
-	font-size: 0.72rem;
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
-	text-align: right;
+}
+
+.plate strong span {
+	font-size: 1rem;
+	letter-spacing: 0.02em;
+}
+
+.plate > span {
+	font-size: 0.72rem;
 }
 
 .job {

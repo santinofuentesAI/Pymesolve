@@ -141,12 +141,11 @@ export function Problemas() {
 						</div>
 						{hitPool ? (
 							<div className={styles.plate}>
-								<strong>{formatUsdc(hitPool.committed_usdc)}</strong>
-								<span>
-									USDC
-									<br />
-									{hitPool.members.length} comercios
-								</span>
+								<strong>
+									{formatUsdc(hitPool.committed_usdc)}
+									<span>USDC</span>
+								</strong>
+								<span>{hitPool.members.length} comercios</span>
 							</div>
 						) : (
 							<p className={styles.empty}>Todavía no se juntó con nadie.</p>
@@ -170,12 +169,11 @@ export function Problemas() {
 					<h2 className={styles.job}>{featured.title}</h2>
 					<p>{featured.summary}</p>
 					<div className={styles.plate}>
-						<strong>{formatUsdc(featured.committed_usdc)}</strong>
-						<span>
-							USDC
-							<br />
-							{featured.members.length} comercios
-						</span>
+						<strong>
+							{formatUsdc(featured.committed_usdc)}
+							<span>USDC</span>
+						</strong>
+						<span>{featured.members.length} comercios</span>
 					</div>
 					<div className={styles.names}>
 						{featured.members.map((m) => (

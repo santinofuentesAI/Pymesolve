@@ -149,10 +149,11 @@ export function Encargo() {
 				</article>
 			) : null}
 			<div className={styles.plate}>
-				<strong>{formatUsdc(pool.committed_usdc)}</strong>
+				<strong>
+					{formatUsdc(pool.committed_usdc)}
+					<span>USDC</span>
+				</strong>
 				<span>
-					USDC
-					<br />
 					en el retén {fundedCount}/{pool.members.length}
 				</span>
 			</div>

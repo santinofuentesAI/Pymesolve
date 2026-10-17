@@ -127,12 +127,11 @@ export function Encargos() {
 			<h1 className={styles.display}>{pool.title}</h1>
 			<p className={styles.lede}>{pool.summary}</p>
 			<div className={styles.plate}>
-				<strong>{formatUsdc(pool.committed_usdc)}</strong>
-				<span>
-					USDC
-					<br />
-					{frase(role, fase, taken)}
-				</span>
+				<strong>
+					{formatUsdc(pool.committed_usdc)}
+					<span>USDC</span>
+				</strong>
+				<span>{frase(role, fase, taken)}</span>
 			</div>
 			<div className={styles.names}>
 				{pool.members.map((m) => (

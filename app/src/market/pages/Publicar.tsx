@@ -161,12 +161,11 @@ export function Publicar() {
 						))}
 					</div>
 					<div className={styles.plate}>
-						<strong>{formatUsdc(metaIfJoin)}</strong>
-						<span>
-							USDC
-							<br />
-							si te sumás
-						</span>
+						<strong>
+							{formatUsdc(metaIfJoin)}
+							<span>USDC</span>
+						</strong>
+						<span>si te sumás</span>
 					</div>
 					<button
 						type="button"

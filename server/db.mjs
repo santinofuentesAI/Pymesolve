@@ -306,6 +306,7 @@ function seed() {
 			 VALUES (?, 'pyme-salon', 'pyme', 'system', ?, ?)`,
 		).run(poolId, "Salón Nidia se sumó con 10 USDC. Meta: 30 USDC.", now)
 	}
+	ensureDemoLikes(now)
 }
 
 ensureSeedPeople()
@@ -408,10 +409,23 @@ function upsertPyme(pyme, now) {
 	db.prepare("DELETE FROM card_copy WHERE key LIKE ?").run(`user:${pyme.id}:%`)
 }
 
+function ensureDemoLikes(now) {
+	const likes = ["dev-karla", "dev-andres", "dev-elena"]
+	const insert = db.prepare(
+		`INSERT OR IGNORE INTO interests (actor_id, target_id, kind, created_at)
+		 VALUES ('pyme-soda', ?, 'dev', ?)`,
+	)
+	for (const id of likes) {
+		const person = db.prepare("SELECT id FROM users WHERE id = ?").get(id)
+		if (person) insert.run(id, now)
+	}
+}
+
 function ensureSeedPeople() {
 	const now = nowIso()
 	for (const oficio of oficios) upsertDev(oficio, now)
 	for (const pyme of pymes) upsertPyme(pyme, now)
+	ensureDemoLikes(now)
 }
 
 const WIPE = [
