@@ -1,6 +1,6 @@
 # PymeSolve
 
-Quién te lo hace. Un comercio publica lo que le falta. Si otro pide lo mismo, se juntan en un solo encargo. Un oficio lo toma, deja la carta del lunes y el USDC se suelta cuando alguien más dice que lo vio.
+¿Quién te soluciona?. Una pequeña/mediana empresa publica un problema en esta app. Si otra tiene el mismo, se juntan ambos problemas en una sola publicación (una IA entrenada se encarga). Un freelancer verificado ve el encargo, lo acepta y se pone a trabajar en la solución de su problema, todo bajo el sello Stellar, Trustless Work y Cavos. 
 
 Está hecha para pymes de Costa Rica, en testnet. La plata de prueba no vale. El XLM de la cuenta solo paga la comisión de la red.
 
