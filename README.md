@@ -6,9 +6,6 @@ Adiós wallets complicadas de criptomonedas, y bienvenido el pago seguro, con ba
 
 Tiene un modo scroll semi infinito donde están problemas de Pymes o perfiles personas, a la derecha se guarda 💚, a la izquierda se va ❌. En Encargos se ve Gente que me sirve listada con perfil y un chat
 
----
-
-github.com/santinofuentes
 
 ## El caso que abre
 
