@@ -1,8 +1,14 @@
 # PymeSolve
 
-Tres comercios necesitan el mismo video de 20 segundos. Hoy pagan tres veces. PymeSolve lo junta en un solo encargo: cada una pone 10, la meta es 30 USDC, y un oficio lo hace una vez.
+¿Quién te soluciona? Una pequeña/mediana empresa publica un problema en esta app. Si otra tiene el mismo, se juntan ambos problemas en una sola publicación (una IA entrenada se encarga). Un freelancer verificado ve el encargo, lo acepta y se pone a trabajar en la solución del problema, todo bajo el sello Stellar, Trustless Work y Cavos.
 
-Quién te lo hace: el oficio que ya tiene la carta. La deja el lunes, cobra cuando alguien más dice que lo vio, y esa misma carta la cobra otra vez con el próximo grupo.
+Adiós wallets complicadas de criptomonedas, y bienvenido el pago seguro, con baja comisión y de forma sencilla para que los negocios resuelvan sus problemas, sin tener que buscar exhaustivamente solución, y darle oportunidades a los freelancers de aparte de solucionar tengan una buena relación con estas Pymes para futuras colaboraciones.
+
+Tiene un modo scroll semi infinito donde están problemas de Pymes o perfiles personas, a la derecha se guarda 💚, a la izquierda se va ❌. En Encargos se ve Gente que me sirve listada con perfil y un chat
+
+---
+
+github.com/santinofuentes
 
 ## El caso que abre
 
