@@ -8,6 +8,7 @@ import {
 	type TwinGroup,
 	type TwinLook,
 	type Liked,
+	type Molde,
 	type User,
 } from "./types"
 
@@ -72,6 +73,13 @@ export const api = {
 			body: JSON.stringify({ targetId, kind }),
 		}),
 	liked: () => req<Liked[]>("/api/interests"),
+	moldes: (mine = false) =>
+		req<Molde[]>(`/api/moldes${mine ? "?mine=1" : ""}`),
+	joinMolde: (id: number) =>
+		req<{ ok: boolean; waiting: number }>(`/api/moldes/${id}/sumar`, {
+			method: "POST",
+			body: "{}",
+		}),
 	openChat: (targetId: string) =>
 		req<{ id: number }>("/api/dms", {
 			method: "POST",

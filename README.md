@@ -1,11 +1,23 @@
 # PymeSolve
 
-¿Quién te soluciona?. Una pequeña/mediana empresa publica un problema en esta app. Si otra tiene el mismo, se juntan ambos problemas en una sola publicación (una IA entrenada se encarga). Un freelancer verificado ve el encargo, lo acepta y se pone a trabajar en la solución del problema, todo bajo el sello Stellar, Trustless Work y Cavos. 
+Tres comercios necesitan el mismo video de 20 segundos. Hoy pagan tres veces. PymeSolve lo junta en un solo encargo: cada una pone 10, la meta es 30 USDC, y un oficio lo hace una vez.
 
-Adiós wallets complicadas de criptomonedas, y bienvenido el pago seguro, con baja comisión y de forma sencilla para que los negocios resuelvan sus problemas, sin tener que buscar exhaustivamente solución, y darle oportunidades a los freelancers de aparte de solucionar tengan una buena relación con estas Pymes para futuras colaboraciones. 
+Quién te lo hace: el oficio que ya tiene la carta. La deja el lunes, cobra cuando alguien más dice que lo vio, y esa misma carta la cobra otra vez con el próximo grupo.
 
-Tiene un modo scroll semi infinito donde están problemas de Pymes o perfiles  personas, a la derecha se guarda💚, a la izquierda se va❌. En Encargos se ve **Gente que me sirve** listada con perfil y un chat directo.
+## El caso que abre
 
+Soda El Casado, Pulpería Doña Lidi y Salón Nidia piden el mismo clip: el plato contra la ventana, el nombre del local al final. Sin la app son tres presupuestos. Acá es uno. Se ve sin entrar.
+
+Está hecha para pymes de Costa Rica, en testnet. La plata de prueba no vale. El XLM de la cuenta solo paga la comisión de la red.
+
+## Qué hace
+
+- Junta pedidos parecidos en un solo encargo.
+- Muestra cuánto sale sumarse y cuánto saldría hacerlo solo.
+- La carta del lunes queda como molde: el oficio la cobra otra vez.
+- El USDC espera hasta que alguien más dice que lo vio.
+- Si hay pelea, la mesa parte el encargo.
+- El nombre, el barrio y el chat no salen a la red.
 
 ## Tres formas de usarla
 
@@ -16,6 +28,8 @@ La misma app cambia de pies a cabeza según quién entra. El cambio de persona d
 | Pyme | Publica un problema y sigue su parte del encargo. | Problemas, Encargos, Publicar, Libro, Ajustes |
 | Oficio | Toma un encargo y deja la carta. | Ofertas, Encargos, Chats, Libro, Ajustes |
 | Mesa | Mira altas y, si hay pelea, parte el USDC. No publica ni toma encargos. | Mesa, Altas, Chats, Libro, Ajustes |
+
+Dopamina no es una pestaña. Desde Problemas se puede pasar oficios como un mazo: a la derecha se guarda, a la izquierda se va. En Encargos, **Gente que me sirve** lista a esas personas en una oración, con perfil y un chat directo.
 
 La búsqueda es una frase y un resultado. El Libro muestra quién se sumó, depositó o tomó el encargo. Una pyme ve su nombre y al resto como “Un comercio”. La mesa sí ve los nombres.
 

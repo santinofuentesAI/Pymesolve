@@ -175,6 +175,12 @@ CREATE TABLE IF NOT EXISTS offers (
 	note TEXT NOT NULL DEFAULT '',
 	created_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS molde_signups (
+	pool_id INTEGER NOT NULL,
+	actor_id TEXT NOT NULL,
+	created_at TEXT NOT NULL,
+	UNIQUE (pool_id, actor_id)
+);
 `)
 
 const count = db.prepare("SELECT COUNT(*) AS n FROM users").get().n
@@ -270,7 +276,12 @@ function seed() {
 			now,
 		)
 		const pid = Number(info.lastInsertRowid)
-		insertFts.run(pid, pyme.problem.title, pyme.problem.category, pyme.problem.body)
+		insertFts.run(
+			pid,
+			pyme.problem.title,
+			pyme.problem.category,
+			pyme.problem.body,
+		)
 		if (pyme.problem.category === "videos") {
 			videoIds.push({ pid, pymeId: pyme.id, amount: pyme.problem.amountUsdc })
 		}
@@ -288,7 +299,10 @@ function seed() {
 			.run("Video de 20 segundos del plato del día", summary, now)
 		const poolId = Number(pool.lastInsertRowid)
 		for (const v of trio) {
-			db.prepare("UPDATE problems SET pool_id = ? WHERE id = ?").run(poolId, v.pid)
+			db.prepare("UPDATE problems SET pool_id = ? WHERE id = ?").run(
+				poolId,
+				v.pid,
+			)
 			db.prepare(
 				`INSERT INTO pool_members (pool_id, pyme_id, joined, amount_usdc) VALUES (?, ?, 1, ?)`,
 			).run(poolId, v.pymeId, v.amount)
@@ -307,6 +321,7 @@ function seed() {
 		).run(poolId, "Salón Nidia se sumó con 10 USDC. Meta: 30 USDC.", now)
 	}
 	ensureDemoLikes(now)
+	ensureDemoMolde(now)
 }
 
 ensureSeedPeople()
@@ -336,7 +351,10 @@ function upsertDev(row, now) {
 			.prepare("SELECT id FROM proofs WHERE user_id = ? AND kind = 'drive'")
 			.get(row.id)
 		if (proof) {
-			db.prepare("UPDATE proofs SET url = ? WHERE id = ?").run(row.drive, proof.id)
+			db.prepare("UPDATE proofs SET url = ? WHERE id = ?").run(
+				row.drive,
+				proof.id,
+			)
 		}
 	}
 	db.prepare("DELETE FROM card_copy WHERE key LIKE ?").run(`user:${row.id}:%`)
@@ -421,16 +439,51 @@ function ensureDemoLikes(now) {
 	}
 }
 
+function ensureDemoMolde(now) {
+	const title = "Video de 20 segundos, listo para copiar"
+	const letter =
+		"El lunes: plato blanco contra la ventana, 20 segundos, el nombre del local al final. Mismo encuadre para copiarlo al día siguiente. El oficio deja el ritual; el comercio pulsa grabar."
+	const karla = db.prepare("SELECT id FROM users WHERE id = 'dev-karla'").get()
+	if (!karla) return
+	let row = db
+		.prepare("SELECT id FROM pools WHERE title = ? AND dev_id = 'dev-karla'")
+		.get(title)
+	if (!row) {
+		const info = db
+			.prepare(
+				`INSERT INTO pools (title, category, summary, status, dev_id, committed_usdc, letter, created_at)
+				 VALUES (?, 'videos', ?, 'Released', 'dev-karla', 30, ?, ?)`,
+			)
+			.run(
+				title,
+				"Karla ya lo hizo una vez. El próximo grupo no empieza de cero: se suma y ella lo cobra de nuevo.",
+				letter,
+				now,
+			)
+		row = { id: Number(info.lastInsertRowid) }
+	}
+	const taller = db
+		.prepare("SELECT id FROM users WHERE id = 'pyme-taller'")
+		.get()
+	if (taller) {
+		db.prepare(
+			`INSERT OR IGNORE INTO molde_signups (pool_id, actor_id, created_at) VALUES (?, 'pyme-taller', ?)`,
+		).run(row.id, now)
+	}
+}
+
 function ensureSeedPeople() {
 	const now = nowIso()
 	for (const oficio of oficios) upsertDev(oficio, now)
 	for (const pyme of pymes) upsertPyme(pyme, now)
 	ensureDemoLikes(now)
+	ensureDemoMolde(now)
 }
 
 const WIPE = [
 	"dm_messages",
 	"dms",
+	"molde_signups",
 	"interests",
 	"offers",
 	"card_copy",

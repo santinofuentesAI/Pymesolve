@@ -232,7 +232,7 @@ export const pendingDev = {
 	neighborhood: "Cartago",
 	bio: "Armo una página simple con WhatsApp, horario y dónde queda el local. Sin diez secciones ni tienda rara. Sirve para taller, soda o salón que hoy solo responde por mensaje.",
 	github: "",
-	drive: "https://drive.google.com/drive/folders/1gqY3W4pIMb6orWrL6WmLp7mg2pEP_TzQ",
+	drive: "https://drive.google.com/drive/folders/andres-web",
 	social: "https://andresmora.cr",
 	linkedin: "",
 	verified: 0,

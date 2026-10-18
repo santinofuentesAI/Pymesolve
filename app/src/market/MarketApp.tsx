@@ -1,4 +1,6 @@
+import { useState } from "react"
 import { NavLink, Route, Routes, useLocation } from "react-router-dom"
+import { Intro } from "./Intro"
 import { WalletButton } from "../components/WalletButton"
 import { Who } from "./components/Who"
 import { useMode } from "./mode"
@@ -62,11 +64,29 @@ function homeOf(role: Role, dopamina: boolean) {
 	return <Problemas />
 }
 
+const INTRO_KEY = "pymesolve-intro"
+
 export default function MarketApp() {
 	const { theme, appMode } = usePrefs()
 	const { role, actorId } = useMode()
 	const loc = useLocation()
 	const tabs = tabsFor(role, actorId)
+	const [intro, setIntro] = useState(() => {
+		try {
+			return localStorage.getItem(INTRO_KEY) !== "visto"
+		} catch {
+			return false
+		}
+	})
+
+	function closeIntro() {
+		try {
+			localStorage.setItem(INTRO_KEY, "visto")
+		} catch {
+			/* la intro no se vuelve a mostrar si el navegador guarda la marca */
+		}
+		setIntro(false)
+	}
 
 	return (
 		<div className={styles.shell} data-theme={theme} data-mode={appMode}>
@@ -81,10 +101,7 @@ export default function MarketApp() {
 				<Who />
 				<main className={styles.main}>
 					<Routes>
-						<Route
-							path="/"
-							element={homeOf(role, appMode === "dopamina")}
-						/>
+						<Route path="/" element={homeOf(role, appMode === "dopamina")} />
 						<Route path="/encargos" element={<Encargos />} />
 						<Route path="/encargo/:id" element={<Encargo />} />
 						<Route path="/chats" element={<Chats />} />
@@ -110,8 +127,7 @@ export default function MarketApp() {
 									isActive ||
 									(tab.to === "/encargos" &&
 										loc.pathname.startsWith("/encargo")) ||
-									(tab.to === "/chats" &&
-										loc.pathname.startsWith("/chats")) ||
+									(tab.to === "/chats" && loc.pathname.startsWith("/chats")) ||
 									(tab.to === "/asistente" &&
 										loc.pathname.startsWith("/asistente"))
 								return `${styles.tab} ${on ? styles.tabOn : ""}`
@@ -121,6 +137,7 @@ export default function MarketApp() {
 						</NavLink>
 					))}
 				</nav>
+				{intro ? <Intro onDone={closeIntro} /> : null}
 			</div>
 		</div>
 	)

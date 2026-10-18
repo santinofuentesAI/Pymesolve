@@ -746,12 +746,16 @@
 
 .deckLeft {
 	transform: translateX(-120%) rotate(-18deg);
-	transition: transform 280ms linear, background-color 120ms linear;
+	transition:
+		transform 280ms linear,
+		background-color 120ms linear;
 }
 
 .deckRight {
 	transform: translateX(120%) rotate(18deg);
-	transition: transform 280ms linear, background-color 120ms linear;
+	transition:
+		transform 280ms linear,
+		background-color 120ms linear;
 }
 
 .deckYes {
@@ -870,7 +874,7 @@
 
 .switch {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr;
 	gap: 0.4rem;
 }
 
@@ -933,6 +937,85 @@
 .shell[data-mode="dopamina"] .pass {
 	flex: 1;
 	min-height: 0;
+}
+
+.intro {
+	position: fixed;
+	inset: 0;
+	z-index: 30;
+	display: flex;
+	justify-content: center;
+	background: #d9d1c4;
+}
+
+.introPanel {
+	width: min(440px, 100%);
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	padding: 1.1rem 1.2rem 1.4rem;
+	background: var(--paper);
+	color: var(--ink);
+	border-inline: 3px solid var(--line);
+}
+
+.introTop {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.78rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+.introTop button {
+	width: auto;
+	min-height: 2.2rem;
+}
+
+.introBody {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.introBody h1 {
+	margin: 0.2rem 0 0;
+	font-size: clamp(1.8rem, 7vw, 2.5rem);
+	line-height: 1.05;
+	max-width: 14ch;
+}
+
+.introBody p,
+.introBody li {
+	font-size: 1.12rem;
+	line-height: 1.35;
+}
+
+.introBody ul {
+	margin: 0.8rem 0 0;
+	padding-left: 1.1rem;
+}
+
+.introBody li + li {
+	margin-top: 0.4rem;
+}
+
+.introNav {
+	display: grid;
+	grid-template-columns: 1fr 1.4fr;
+	gap: 0.5rem;
+}
+
+.shell[data-theme="noche"] .intro {
+	background: #0e0e0e;
+}
+
+.shell[data-theme="campo"] .intro {
+	background: #c5d7c4;
 }
 
 @media (prefers-reduced-motion: reduce) {

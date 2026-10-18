@@ -2,10 +2,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { type PointerEvent, useEffect, useRef, useState } from "react"
 import { api } from "../api"
 import { oficio } from "../labels"
+import { formatUsdc } from "../money"
 import { useMode } from "../mode"
 import styles from "../styles.module.css"
 import { setAppMode } from "../theme"
-import { type User } from "../types"
+import { type Molde, type User } from "../types"
 
 const SWIPE = 64
 
@@ -18,7 +19,9 @@ function clip(text: string, n: number): string {
 export function Dopamina() {
 	const { role, actorId } = useMode()
 	const qc = useQueryClient()
-	const [deck, setDeck] = useState<"pyme" | "dev">(role === "dev" ? "pyme" : "dev")
+	const [deck, setDeck] = useState<"pyme" | "dev" | "molde">(
+		role === "dev" ? "pyme" : "dev",
+	)
 	const [i, setI] = useState(0)
 	const [shift, setShift] = useState(0)
 	const [gone, setGone] = useState<"left" | "right" | null>(null)
@@ -29,17 +32,31 @@ export function Dopamina() {
 	const commitRef = useRef<(dir: "left" | "right") => void>(() => {})
 	const cards = useQuery({
 		queryKey: ["cards", deck],
-		queryFn: () => api.cards(deck),
+		queryFn: () => api.cards(deck === "molde" ? "dev" : deck),
+		enabled: deck !== "molde",
+	})
+	const moldes = useQuery({
+		queryKey: ["moldes", actorId],
+		queryFn: () => api.moldes(false),
+		enabled: deck === "molde",
 	})
 	const list = (cards.data?.cards ?? []).filter((u) => u.id !== actorId)
+	const moldeList = moldes.data ?? []
+	const molde = deck === "molde" ? moldeList[i] : undefined
+	const nextMolde = deck === "molde" ? moldeList[i + 1] : undefined
 	const card = list[i]
 	const nextCard = list[i + 1]
 
-	function finish(dir: "left" | "right", user: User | undefined) {
+	function finish(dir: "left" | "right", user: User | undefined, picked?: Molde) {
 		setGone(null)
 		shiftRef.current = 0
 		setShift(0)
 		busy.current = false
+		if (dir === "right" && picked && role === "pyme") {
+			void api.joinMolde(picked.id).then(() => {
+				void qc.invalidateQueries({ queryKey: ["moldes"] })
+			})
+		}
 		if (dir === "right" && user) {
 			void api.interest(user.id, deck).then(() => {
 				void qc.invalidateQueries({ queryKey: ["cards"] })
@@ -49,16 +66,18 @@ export function Dopamina() {
 	}
 
 	function commit(dir: "left" | "right") {
-		if (busy.current || !card) return
+		if (busy.current) return
+		if (deck === "molde" ? !molde : !card) return
 		busy.current = true
 		const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+		const user = deck === "molde" ? undefined : card
+		const picked = deck === "molde" ? molde : undefined
 		if (reduce) {
-			finish(dir, card)
+			finish(dir, user, picked)
 			return
 		}
 		setGone(dir)
-		const user = card
-		window.setTimeout(() => finish(dir, user), 280)
+		window.setTimeout(() => finish(dir, user, picked), 280)
 	}
 
 	commitRef.current = commit
@@ -124,8 +143,10 @@ export function Dopamina() {
 	return (
 		<section className={styles.pass}>
 			<p className={styles.kicker}>
-				Pasar gente
-				{list.length > 0 ? ` · ${Math.min(i + 1, list.length)} de ${list.length}` : ""}
+				{deck === "molde" ? "Pasar moldes" : "Pasar gente"}
+				{(deck === "molde" ? moldeList.length : list.length) > 0
+					? ` · ${Math.min(i + 1, deck === "molde" ? moldeList.length : list.length)} de ${deck === "molde" ? moldeList.length : list.length}`
+					: ""}
 			</p>
 			<div className={styles.switch}>
 				<button
@@ -150,8 +171,36 @@ export function Dopamina() {
 				>
 					Oficios
 				</button>
+				<button
+					type="button"
+					className={deck === "molde" ? styles.primary : undefined}
+					onClick={() => {
+						setDeck("molde")
+						setI(0)
+						setShift(0)
+					}}
+				>
+					Moldes
+				</button>
 			</div>
-			{cards.isLoading ? (
+			{deck === "molde" ? (
+				<MoldeDeck
+					molde={molde}
+					nextMolde={nextMolde}
+					loading={moldes.isLoading}
+					gone={gone}
+					moved={moved}
+					tilt={tilt}
+					shift={shift}
+					yesOp={yesOp}
+					noOp={noOp}
+					hotYes={hotYes}
+					hotNo={hotNo}
+					onDown={down}
+					onMove={move}
+					onCommit={commit}
+				/>
+			) : cards.isLoading ? (
 				<p>Abriendo el mazo…</p>
 			) : !card ? (
 				<div className={styles.card}>
@@ -260,5 +309,103 @@ export function Dopamina() {
 				</button>
 			</p>
 		</section>
+	)
+}
+
+function MoldeDeck({
+	molde,
+	nextMolde,
+	loading,
+	gone,
+	moved,
+	tilt,
+	shift,
+	yesOp,
+	noOp,
+	hotYes,
+	hotNo,
+	onDown,
+	onMove,
+	onCommit,
+}: {
+	molde: Molde | undefined
+	nextMolde: Molde | undefined
+	loading: boolean
+	gone: "left" | "right" | null
+	moved: boolean
+	tilt: number
+	shift: number
+	yesOp: number
+	noOp: number
+	hotYes: boolean
+	hotNo: boolean
+	onDown: (e: PointerEvent<HTMLElement>) => void
+	onMove: (e: PointerEvent<HTMLElement>) => void
+	onCommit: (dir: "left" | "right") => void
+}) {
+	if (loading) return <p>Abriendo el mazo…</p>
+	if (!molde) {
+		return (
+			<div className={styles.card}>
+				<p>Se acabó el mazo.</p>
+				<button
+					type="button"
+					className={styles.primary}
+					onClick={() => setAppMode("inicio")}
+				>
+					Volver a Inicio
+				</button>
+			</div>
+		)
+	}
+	return (
+		<div className={styles.stage}>
+			{nextMolde ? (
+				<article className={styles.deckBack} aria-hidden>
+					<p className={styles.kicker}>Molde</p>
+					<h2>{nextMolde.title}</h2>
+				</article>
+			) : null}
+			<article
+				className={`${styles.deck} ${gone === "left" ? styles.deckLeft : ""} ${gone === "right" ? styles.deckRight : ""} ${hotYes ? styles.deckYes : ""} ${hotNo ? styles.deckNo : ""}`}
+				style={
+					moved
+						? { transform: `translateX(${shift}px) rotate(${tilt}deg)` }
+						: gone
+							? undefined
+							: {
+									transform: "translateX(0) rotate(0deg)",
+									transition: "transform 120ms linear",
+								}
+				}
+				onPointerDown={onDown}
+				onPointerMove={onMove}
+			>
+				<span className={`${styles.stamp} ${styles.stampYes}`} style={{ opacity: yesOp }}>
+					Me sumo
+				</span>
+				<span className={`${styles.stamp} ${styles.stampNo}`} style={{ opacity: noOp }}>
+					Ahora no
+				</span>
+				<div className={styles.deckBody}>
+					<p className={styles.kicker}>
+						Molde · {molde.devName} · {formatUsdc(molde.shareUsdc)} USDC
+					</p>
+					<h2>{molde.title}</h2>
+					<p className={styles.deckBio}>{clip(molde.letter, 160)}</p>
+					<p className={styles.deckPedido}>
+						{molde.waiting} en el próximo grupo. Solo saldría {formatUsdc(molde.soloUsdc)}.
+					</p>
+				</div>
+				<div className={styles.deckActions} onPointerDown={(e) => e.stopPropagation()}>
+					<button type="button" onClick={() => onCommit("left")}>
+						Ahora no
+					</button>
+					<button type="button" className={styles.primary} onClick={() => onCommit("right")}>
+						Me sumo
+					</button>
+				</div>
+			</article>
+		</div>
 	)
 }

@@ -163,3 +163,4 @@ docs/AGENT-SETUP.md       per-agent setup and optional MCP servers
 - Dice play follows Mario Party timing: the camera closes on the current character, they jump and hit the die, and the die keeps spinning before showing the number.
 - Gemma 4 E2B runs locally via Ollama (`server/gemma.mjs`) for twin copy and Dopamina bullets; it never signs, never moves USDC, never verifies people, and never creates an encargo.
 - `node:sqlite` in `server/` rejects `.all([x])` (`Unknown named parameter '0'`); pass values as `.all(x)` or `.all(a, b)`, never an array.
+- Product `origin` is `git@github.com:santinofuentesAI/Pymesolve.git` (https://github.com/santinofuentesAI/Pymesolve). `upstream` stays the scaffold template. The README on that repo describes PymeSolve, the product.

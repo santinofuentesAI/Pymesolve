@@ -30,6 +30,20 @@ export type User = {
 	pedido?: { title: string; body: string; category: string }
 }
 
+export type Molde = {
+	id: number
+	title: string
+	category: string
+	summary: string
+	letter: string
+	devId: string
+	devName: string
+	shareUsdc: number
+	soloUsdc: number
+	waiting: number
+	joined: boolean
+}
+
 export type Liked = {
 	id: string
 	name: string

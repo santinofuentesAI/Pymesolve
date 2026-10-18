@@ -582,6 +582,67 @@ const server = createServer(async (req, res) => {
 			)
 		}
 
+		if (path === "/api/moldes" && req.method === "GET") {
+			const mine = url.searchParams.get("mine") === "1"
+			const rows = db
+				.prepare(
+					`SELECT p.id, p.title, p.category, p.summary, p.letter, p.dev_id, p.committed_usdc,
+					        u.name AS dev_name
+					 FROM pools p JOIN users u ON u.id = p.dev_id
+					 WHERE p.status = 'Released' AND p.letter IS NOT NULL
+					   AND (? = '' OR p.dev_id = ?)
+					 ORDER BY p.id DESC`,
+				)
+				.all(mine ? actor.id : "", mine ? actor.id : "")
+			return send(
+				res,
+				200,
+				rows.map((row) => ({
+					id: row.id,
+					title: row.title,
+					category: row.category,
+					summary: row.summary,
+					letter: row.letter,
+					devId: row.dev_id,
+					devName: row.dev_name,
+					shareUsdc: 10,
+					soloUsdc: row.committed_usdc,
+					waiting: db
+						.prepare("SELECT COUNT(*) AS n FROM molde_signups WHERE pool_id = ?")
+						.get(row.id).n,
+					joined: Boolean(
+						actor.id &&
+							db
+								.prepare(
+									"SELECT 1 AS ok FROM molde_signups WHERE pool_id = ? AND actor_id = ?",
+								)
+								.get(row.id, actor.id),
+					),
+				})),
+			)
+		}
+
+		const moldeJoin = path.match(/^\/api\/moldes\/(\d+)\/sumar$/)
+		if (moldeJoin && req.method === "POST") {
+			if (actor.role !== "pyme" || !actor.id) {
+				return send(res, 403, { error: "Solo un comercio se suma a un molde." })
+			}
+			const id = Number(moldeJoin[1])
+			const molde = db
+				.prepare(
+					"SELECT id FROM pools WHERE id = ? AND status = 'Released' AND letter IS NOT NULL",
+				)
+				.get(id)
+			if (!molde) return send(res, 404, { error: "Ese molde no está." })
+			db.prepare(
+				`INSERT OR IGNORE INTO molde_signups (pool_id, actor_id, created_at) VALUES (?, ?, ?)`,
+			).run(id, actor.id, nowIso())
+			const waiting = db
+				.prepare("SELECT COUNT(*) AS n FROM molde_signups WHERE pool_id = ?")
+				.get(id).n
+			return send(res, 200, { ok: true, waiting })
+		}
+
 		if (path === "/api/recipes" && req.method === "GET") {
 			const rows = db
 				.prepare(

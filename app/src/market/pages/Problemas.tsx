@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useMemo, useState } from "react"
 import { Link } from "react-router-dom"
 import { api } from "../api"
@@ -7,7 +7,7 @@ import { useMode } from "../mode"
 import { formatUsdc } from "../money"
 import styles from "../styles.module.css"
 import { setAppMode } from "../theme"
-import { type Pool, type Role } from "../types"
+import { type Molde, type Pool, type Role } from "../types"
 
 function mirada(role: Role): { kicker: string; title: string; lede: string } {
 	switch (role) {
@@ -34,6 +34,12 @@ function mirada(role: Role): { kicker: string; title: string; lede: string } {
 			return neverRole
 		}
 	}
+}
+
+function junta(pool: Pool, actorId: string): string {
+	const mine = pool.members.find((m) => m.pyme_id === actorId)
+	const share = mine?.amount_usdc ?? pool.members[0]?.amount_usdc ?? pool.committed_usdc
+	return `${pool.members.length} ya lo pidieron. Sumarte sale ${formatUsdc(share)}. Solo saldría ${formatUsdc(pool.committed_usdc)}.`
 }
 
 function pasoDe(role: Role, pool: Pool, actorId: string): string {
@@ -71,6 +77,12 @@ export function Problemas() {
 		enabled: searching,
 	})
 	const pools = useQuery({ queryKey: ["pools"], queryFn: api.pools })
+	const moldes = useQuery({
+		queryKey: ["moldes", actorId],
+		queryFn: () => api.moldes(false),
+		enabled: role === "pyme",
+	})
+	const molde = moldes.data?.[0]
 
 	const featured = useMemo(() => {
 		const open = (pools.data ?? []).find(
@@ -140,13 +152,16 @@ export function Problemas() {
 							</Link>
 						</div>
 						{hitPool ? (
-							<div className={styles.plate}>
-								<strong>
-									{formatUsdc(hitPool.committed_usdc)}
-									<span>USDC</span>
-								</strong>
-								<span>{hitPool.members.length} comercios</span>
-							</div>
+							<>
+								<div className={styles.plate}>
+									<strong>
+										{formatUsdc(hitPool.committed_usdc)}
+										<span>USDC</span>
+									</strong>
+									<span>{hitPool.members.length} comercios</span>
+								</div>
+								<p>{junta(hitPool, actorId)}</p>
+							</>
 						) : (
 							<p className={styles.empty}>Todavía no se juntó con nadie.</p>
 						)}
@@ -175,6 +190,7 @@ export function Problemas() {
 						</strong>
 						<span>{featured.members.length} comercios</span>
 					</div>
+					<p>{junta(featured, actorId)}</p>
 					<div className={styles.names}>
 						{featured.members.map((m) => (
 							<Link
@@ -200,6 +216,43 @@ export function Problemas() {
 			) : (
 				<p className={styles.empty}>Todavía no hay un problema publicado.</p>
 			)}
+			{molde ? <MoldeListo molde={molde} /> : null}
 		</section>
+	)
+}
+
+function MoldeListo({ molde }: { molde: Molde }) {
+	const qc = useQueryClient()
+	const [busy, setBusy] = useState(false)
+	return (
+		<article className={styles.card}>
+			<p className={styles.kicker}>Molde · {molde.devName}</p>
+			<h2 className={styles.job}>{molde.title}</h2>
+			<p>{molde.summary}</p>
+			<p>{molde.letter}</p>
+			<div className={styles.plate}>
+				<strong>
+					{formatUsdc(molde.shareUsdc)}
+					<span>USDC</span>
+				</strong>
+				<span>
+					{molde.waiting} en el próximo grupo · solo saldría {formatUsdc(molde.soloUsdc)}
+				</span>
+			</div>
+			<button
+				type="button"
+				className={styles.primary}
+				disabled={busy || molde.joined}
+				onClick={() => {
+					setBusy(true)
+					void api
+						.joinMolde(molde.id)
+						.then(() => qc.invalidateQueries({ queryKey: ["moldes"] }))
+						.finally(() => setBusy(false))
+				}}
+			>
+				{molde.joined ? "Ya te sumaste" : "Sumarme al próximo"}
+			</button>
+		</article>
 	)
 }

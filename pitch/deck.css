@@ -1,0 +1,166 @@
+:root {
+	--ink: #1a140c;
+	--muted: #5c5348;
+	--bg: #efe8dc;
+	--paper: #fffdf8;
+	--accent: #f3c56b;
+	--fill: #1a140c;
+	--fill-ink: #fffdf8;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	height: 100%;
+	background: #d9d1c4;
+	color: var(--ink);
+	font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+body {
+	min-height: 100%;
+	display: grid;
+	place-items: center;
+}
+
+#deck {
+	width: min(920px, calc(100% - 2rem));
+	min-height: min(640px, calc(100vh - 6.5rem));
+	background: var(--bg);
+	border: 3px solid var(--ink);
+	position: relative;
+}
+
+.slide {
+	display: none;
+	min-height: min(640px, calc(100vh - 6.5rem));
+	padding: 2.2rem 2.4rem 2rem;
+	border-top: 14px solid var(--accent);
+}
+
+.slide.on {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.kicker {
+	margin: 0 0 0.8rem;
+	font-size: 0.78rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+h1 {
+	margin: 0;
+	font-size: clamp(2rem, 5vw, 3.4rem);
+	line-height: 1.05;
+	max-width: 16ch;
+}
+
+.lead,
+ul {
+	margin: 1.2rem 0 0;
+	max-width: 34rem;
+	font-size: 1.25rem;
+	line-height: 1.35;
+}
+
+ul {
+	padding-left: 1.2rem;
+}
+
+li + li {
+	margin-top: 0.45rem;
+}
+
+.num {
+	margin: 0 0 0.3rem;
+	font-size: clamp(4.2rem, 12vw, 7rem);
+	line-height: 0.9;
+	font-weight: 800;
+}
+
+.src {
+	margin: 1.4rem 0 0;
+	max-width: 36rem;
+	color: var(--muted);
+	font-size: 0.85rem;
+}
+
+.plate {
+	margin: 1.4rem 0 0;
+	width: 11rem;
+	background: var(--paper);
+	border: 3px solid var(--ink);
+	padding: 0.7rem 0.8rem 0.6rem;
+	display: flex;
+	flex-direction: column;
+}
+
+.plate strong {
+	display: flex;
+	align-items: baseline;
+	gap: 0.4rem;
+	font-size: 2.4rem;
+	line-height: 1;
+}
+
+.plate strong span {
+	font-size: 0.95rem;
+	font-weight: 700;
+}
+
+.plate > span {
+	margin-top: 0.25rem;
+	font-size: 0.72rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+nav {
+	width: min(920px, calc(100% - 2rem));
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	gap: 0.6rem;
+	margin-top: 0.7rem;
+	align-items: center;
+}
+
+button {
+	font: inherit;
+	font-weight: 700;
+	background: var(--paper);
+	color: var(--ink);
+	border: 3px solid var(--ink);
+	padding: 0.7rem 1rem;
+	cursor: pointer;
+}
+
+#next {
+	justify-self: end;
+	background: var(--fill);
+	color: var(--fill-ink);
+}
+
+#count {
+	margin: 0;
+	text-align: center;
+	font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+	.slide {
+		padding: 1.4rem 1.2rem 1.2rem;
+	}
+
+	.lead,
+	ul {
+		font-size: 1.05rem;
+	}
+}
